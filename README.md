@@ -5,7 +5,7 @@
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
 [![Days Completed](https://img.shields.io/badge/Days%20Completed-0%2F100-blue?style=for-the-badge)]()
-[![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/YOUR-LINKEDIN-USERNAME)
+[![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
 
@@ -43,7 +43,7 @@ Every day includes:
 
 | Day | Topic | Summary | Notes |
 |-----|-------|---------|-------|
-| [Day 01](./days/day-01/README.md) | — | Coming Soon | — |
+| [Day 01](./days/day-01/README.md) | Non-Interactive Shell User | Created user `rose` with `/sbin/nologin` on App Server 1 | ✅ |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
