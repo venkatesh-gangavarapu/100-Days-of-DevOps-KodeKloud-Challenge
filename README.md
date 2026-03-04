@@ -44,6 +44,8 @@ Every day includes:
 | Day | Topic | Summary | Notes |
 |-----|-------|---------|-------|
 | [Day 01](./days/day-01/README.md) | Non-Interactive Shell User | Created user `rose` with `/sbin/nologin` on App Server 1 | ✅ |
+| [Day 02](./days/day-02/README.md) | Linux User Management | Created temporary user `anita` with account expiry `2027-01-28` on App Server 2 | ✅ |
+| Day 03 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -112,6 +114,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 0 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 2 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
