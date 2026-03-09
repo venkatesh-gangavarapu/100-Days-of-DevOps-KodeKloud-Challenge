@@ -47,8 +47,8 @@ Every day includes:
 | [Day 02](./days/day-02/README.md) | Linux User Management | Created temporary user `anita` with account expiry `2027-01-28` on App Server 2 | ✅ |
 | [Day 03](./days/day-03/README.md) | Linux Security Hardening | Disabled direct SSH root login on all 3 App Servers — `PermitRootLogin no` | ✅ |
 | [Day 04](./days/day-04/README.md) | Linux File Permissions | Granted execute permissions (`chmod 755`) to backup script for all users on App Server 2 | ✅ |
-| Day 05 | — | Coming Soon | — |
-
+| [Day 05](./days/day-05/README.md) | Linux Security / SELinux | Installed SELinux packages and permanently disabled via `/etc/selinux/config` on App Server 3 | ✅ |
+| Day 06 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -117,6 +117,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 4 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 5 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
