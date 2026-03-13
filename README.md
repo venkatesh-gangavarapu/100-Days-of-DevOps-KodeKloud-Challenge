@@ -51,7 +51,8 @@ Every day includes:
 | [Day 06](./days/day-06/README.md) | Linux Task Scheduling | Installed `cronie`, started `crond`, and added root cron job (`*/5 * * * *`) on all 3 App Servers | ✅ |
 | [Day 07](./days/day-07/README.md) | SSH / Access Management | Configured passwordless SSH from `thor` (jump host) to all 3 App Servers via `ssh-keygen` + `ssh-copy-id` | ✅ |
 | [Day 08](./days/day-08/README.md) | Configuration Management / Ansible | Installed `ansible==4.10.0` globally on jump host via `sudo pip3` — accessible to all users | ✅ |
-| Day 09 | — | Coming Soon | — |
+| [Day 09](./days/day-09/README.md) | Incident Response / MariaDB | Diagnosed and restored MariaDB service on DB server — root cause analysis + `systemctl enable` | ✅ |
+| Day 10 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -120,6 +121,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 8 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 9 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
