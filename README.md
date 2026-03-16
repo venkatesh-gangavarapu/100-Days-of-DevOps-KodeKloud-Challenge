@@ -53,7 +53,8 @@ Every day includes:
 | [Day 08](./days/day-08/README.md) | Configuration Management / Ansible | Installed `ansible==4.10.0` globally on jump host via `sudo pip3` — accessible to all users | ✅ |
 | [Day 09](./days/day-09/README.md) | Incident Response / MariaDB | Diagnosed and restored MariaDB service on DB server — root cause analysis + `systemctl enable` | ✅ |
 | [Day 10](./days/day-10/README.md) | Bash Scripting / Backup Automation | Wrote `news_backup.sh` — zip archive + local save + passwordless SCP to storage server | ✅ |
-| Day 11 | — | Coming Soon | — |
+| [Day 11](./days/day-11/README.md) | Application Server / Tomcat | Installed Tomcat on App Server 3, configured port `8083`, deployed `ROOT.war` to base URL | ✅ |
+| Day 12 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -122,6 +123,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 10 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 11 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
