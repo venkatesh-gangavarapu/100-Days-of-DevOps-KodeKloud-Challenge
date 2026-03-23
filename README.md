@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-15%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-16%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -58,7 +58,8 @@ Every day includes:
 | [Day 13](./days/day-13/README.md) | Linux Security / iptables | Installed iptables, whitelisted LBR (`172.16.238.14`) on port `6000`, blocked all others — rules persisted | ✅ |
 | [Day 14](./days/day-14/README.md) | Apache / Fleet Operations | Fleet-wide triage, identified faulty server, fixed Apache and configured port `3002` on all 3 app servers | ✅ |
 | [Day 15](./days/day-15/README.md) | nginx / SSL/TLS | Installed nginx, deployed self-signed SSL cert, configured HTTPS — Phase 1 complete 🏁 | ✅ |
-| Day 16 | — | Coming Soon | — |
+| [Day 16](./days/day-16/README.md) | Load Balancing / nginx | Configured nginx as LBR on `stlb01` with upstream pool across all 3 app servers — Phase 2 begins 🚀 | ✅ |
+| Day 17 | — | Coming Soon | — |
 
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
@@ -128,6 +129,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 15 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 16 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
