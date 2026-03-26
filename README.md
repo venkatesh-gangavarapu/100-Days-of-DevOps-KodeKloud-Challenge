@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-18%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-19%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -61,7 +61,8 @@ Every day includes:
 | [Day 16](./days/day-16/README.md) | Load Balancing / nginx | Configured nginx as LBR on `stlb01` with upstream pool across all 3 app servers — Phase 2 begins 🚀 | ✅ |
 | [Day 17](./days/day-17/README.md) | Database Administration / PostgreSQL | Created user `kodekloud_rin`, database `kodekloud_db2`, granted full privileges — no service restart | ✅ |
 | [Day 18](./days/day-18/README.md) | Database Administration / MariaDB | Installed MariaDB, created `kodekloud_db8`, user `kodekloud_tim` with full privileges | ✅ |
-| Day 19 | — | Coming Soon | — |
+| [Day 19](./days/day-19/README.md) | Web Server / Apache | Path-based multi-site hosting — `blog` and `apps` served on port `5002` from single Apache instance | ✅ |
+| Day 20 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -130,6 +131,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 18 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 19 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
