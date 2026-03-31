@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-23%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-24%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -66,7 +66,8 @@ Every day includes:
 | [Day 21](./days/day-21/README.md) | Version Control / Git | Installed `git`, created bare repository `/opt/official.git` on Storage Server | ✅ |
 | [Day 22](./days/day-22/README.md) | Version Control / Git | Cloned `/opt/beta.git` to `/usr/src/kodekloudrepos/beta` as `natasha` — no permission changes | ✅ |
 | [Day 23](./days/day-23/README.md) | Version Control / Gitea | Forked `sarah/story-blog` into `jon` account on self-hosted Gitea server | ✅ |
-| Day 24 | — | Coming Soon | — |
+| [Day 24](./days/day-24/README.md) | Version Control / Git | Created branch `xfusioncorp_beta` from `master` in `/usr/src/kodekloudrepos/beta` | ✅ |
+| Day 25 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -135,6 +136,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 23 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 24 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
