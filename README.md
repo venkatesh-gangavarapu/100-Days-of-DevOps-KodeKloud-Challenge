@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-25%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-26%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -68,7 +68,8 @@ Every day includes:
 | [Day 23](./days/day-23/README.md) | Version Control / Gitea | Forked `sarah/story-blog` into `jon` account on self-hosted Gitea server | ✅ |
 | [Day 24](./days/day-24/README.md) | Version Control / Git | Created branch `xfusioncorp_beta` from `master` in `/usr/src/kodekloudrepos/beta` | ✅ |
 | [Day 25](./days/day-25/README.md) | Version Control / Git | Full workflow: branch → add `index.html` → commit → merge → push both branches to origin | ✅ |
-| Day 26 | — | Coming Soon | — |
+| [Day 26](./days/day-26/README.md) | Version Control / Git | Added `dev_news` remote → committed `index.html` → pushed `master` to new remote | ✅ |
+| Day 27 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -137,6 +138,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 25 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 26 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
