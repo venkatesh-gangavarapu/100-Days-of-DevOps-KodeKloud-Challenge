@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-29%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-30%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -29,7 +29,7 @@ Every day includes:
 | Phase | Topics | Days | Status |
 |-------|--------|------|--------|
 | **Phase 1** | Linux, Bash Scripting, Networking Fundamentals | 1–15 | ✅ Complete |
-| **Phase 2** | Docker & Containerization | 16–30 | 🟡 In Progress |
+| **Phase 2** | Docker & Containerization | 16–30 | ✅ Complete |
 | **Phase 3** | Kubernetes & Orchestration | 31–45 | 🔜 Upcoming |
 | **Phase 4** | AWS Core Services (EC2, S3, VPC, IAM) | 46–60 | 🔜 Upcoming |
 | **Phase 5** | CI/CD Pipelines (GitHub Actions, Jenkins) | 61–70 | 🔜 Upcoming |
@@ -72,7 +72,8 @@ Every day includes:
 | [Day 27](./days/day-27/README.md) | Version Control / Git | Reverted HEAD to `initial commit` using `git revert` — commit message `revert games` | ✅ |
 | [Day 28](./days/day-28/README.md) | Version Control / Git | Cherry-picked `Update info.txt` commit from `feature` branch into `master` — pushed to origin | ✅ |
 | [Day 29](./days/day-29/README.md) | Version Control / Gitea / PR Workflow | Full PR lifecycle: max pushed branch → PR created → tom reviewed & approved → merged to master | ✅ |
-| Day 30 | — | Coming Soon | — |
+| [Day 30](./days/day-30/README.md) | Version Control / Git | `git reset --hard` to `add data.txt file` + force push — history cleaned to 2 commits — Phase 2 🏁 | ✅ |
+| Day 31 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -141,6 +142,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 29 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 30 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
