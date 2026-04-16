@@ -233,4 +233,86 @@ sudo tail -f /var/log/secure
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: Passwordless SSH is set up but still prompting for a password. What are the most common causes?**
+
+```bash
+# Step 1: Check permissions on jump host
+ls -la ~/.ssh/
+# ~/.ssh/ must be 700, id_rsa must be 600
+
+# Step 2: Check permissions on remote server
+ssh -v user@host    # verbose — shows which auth methods are tried
+
+# Step 3: Check authorized_keys on remote server
+ssh user@host "ls -la ~/.ssh/authorized_keys"
+# Must be 600 (-rw-------)
+
+# Step 4: Check SSH daemon config on remote
+sudo grep -E "PubkeyAuthentication|AuthorizedKeysFile" /etc/ssh/sshd_config
+# PubkeyAuthentication yes (must not be 'no')
+```
+
+> SSH is extremely strict about permissions. If `~/.ssh/` is `755` or `authorized_keys` is `644`, the SSH daemon silently ignores the key and falls back to password auth. This is the #1 cause of "passwordless SSH not working."
+
+---
+
+**Q2: What's the security risk of using a 2048-bit RSA key vs 4096-bit? When does it matter?**
+
+> For most purposes today, 2048-bit RSA is still considered secure. 4096-bit provides a stronger margin against future advances in computing. The practical guidance: use **4096-bit for long-lived keys** (infrastructure, automation) and Ed25519 for modern systems:
+>
+> ```bash
+> ssh-keygen -t ed25519 -C "automation-key" -N ""
+> ```
+>
+> Ed25519 is smaller, faster, and considered more secure than RSA-4096. Use RSA only for compatibility with legacy systems.
+
+---
+
+**Q3: In an automated Ansible or CI/CD setup, the SSH key has no passphrase. Is that a security problem?**
+
+> For machine-to-machine automation, no passphrase is correct and expected — there's no human to enter it at runtime. The security controls shift to:
+> - Restrict the key's permissions to specific commands (`command=` in `authorized_keys`)
+> - Store the private key in a secrets manager (HashiCorp Vault, AWS Secrets Manager) rather than on disk
+> - Rotate keys regularly
+> - Limit what the key's user account can do (scoped sudo, restricted shell)
+>
+> A passphrase on an automation key just breaks the automation.
+
+---
+
+**Q4: How do you add a passphrase to an existing key, or change/remove it?**
+
+```bash
+# Add or change passphrase on existing key
+ssh-keygen -p -f ~/.ssh/id_rsa
+
+# Check if a key already has a passphrase (it will prompt)
+ssh-keygen -y -f ~/.ssh/id_rsa
+```
+
+---
+
+**Q5: You need to set up passwordless SSH from a CI/CD runner to 50 production servers. What's the production-grade approach?**
+
+> 1. Generate a **dedicated deployment key pair** (not your personal key)
+> 2. Store the **private key** in your CI/CD secret store (GitHub Secrets, GitLab CI variables, Jenkins credentials)
+> 3. Distribute the **public key** to all 50 servers via Ansible:
+> ```yaml
+> - name: Add deploy key
+>   ansible.posix.authorized_key:
+>     user: deploy
+>     key: "{{ lookup('file', 'deploy_key.pub') }}"
+>     state: present
+> ```
+> 4. Scope the key to only the commands the CI needs (using `command=` in `authorized_keys`)
+> 5. Rotate the key on a schedule or after any team member departure
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

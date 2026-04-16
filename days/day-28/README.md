@@ -234,4 +234,100 @@ git cherry-pick --abort
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: A critical security fix was applied on the `develop` branch but production runs `main`. You can't merge all of `develop` because it has untested features. What do you do?**
+
+```bash
+# Find the exact security fix commit
+git log develop --oneline --grep="CVE-2024"
+# abc1234 Fix CVE-2024-1234: SQL injection in login form
+
+# Cherry-pick that commit onto main
+git checkout main
+git cherry-pick abc1234
+
+# Push to trigger production deployment
+git push origin main
+```
+
+> This is the textbook hotfix cherry-pick scenario. Security patches, critical bug fixes, and urgent config changes frequently need to go to production before the full feature branch is ready. Cherry-pick is the surgical tool for exactly this situation.
+
+---
+
+**Q2: Cherry-pick completed but the commit on `master` has a different hash than on `feature`. Why?**
+
+> A Git commit hash is computed from: file content + author + timestamp + **parent commit hash**. When cherry-pick replays a commit onto `master`, the parent hash is different (it's `master`'s tip, not `feature`'s previous commit). Different parent = different hash.
+>
+> The CHANGES are identical. The commit hash is different. This is expected and correct. It's also why cherry-picking the same commit to multiple branches creates multiple different hashes — same patch, different ancestry.
+
+---
+
+**Q3: Cherry-pick hit a conflict. How do you resolve it and continue?**
+
+```bash
+git cherry-pick abc1234
+# CONFLICT (content): Merge conflict in info.txt
+# error: could not apply abc1234... Update info.txt
+
+# Step 1: See what's conflicting
+git status
+# both modified: info.txt
+
+# Step 2: Open and resolve the conflict
+vi info.txt
+# Remove conflict markers, keep correct content
+
+# Step 3: Stage the resolved file
+git add info.txt
+
+# Step 4: Continue the cherry-pick
+git cherry-pick --continue
+# Commits with the resolved changes
+
+# OR abort entirely if you change your mind
+git cherry-pick --abort
+```
+
+> Cherry-pick conflicts happen when `master` has already modified the same code the cherry-picked commit touches. The resolution process is identical to merge conflict resolution.
+
+---
+
+**Q4: How do you cherry-pick a range of commits (e.g., a security patch that spans 3 commits)?**
+
+```bash
+# Cherry-pick last 3 commits from feature branch
+git log feature --oneline
+# ghi0003 Fix CVE: update validation logic
+# def0002 Fix CVE: sanitize input
+# abc0001 Fix CVE: add input check
+
+# Cherry-pick the range (abc0001 exclusive, ghi0003 inclusive)
+git cherry-pick abc0001^..ghi0003
+
+# Or specify each commit individually
+git cherry-pick abc0001 def0002 ghi0003
+```
+
+> The `^..` syntax means "everything after abc0001 up to and including ghi0003". The `^` is necessary because ranges are exclusive of the start — without it you'd miss the first commit.
+
+---
+
+**Q5: How does cherry-pick relate to how open-source projects backport security patches across multiple release versions?**
+
+> This is exactly how Linux kernel maintainers, Python, and other major projects handle security patches:
+>
+> 1. Fix is developed against the latest development branch
+> 2. The fix commit is cherry-picked onto each supported release branch (v3.10, v3.11, v3.12)
+> 3. Each branch gets its own version of the patch (different hashes, same changes)
+> 4. Each branch produces its own release (3.10.x, 3.11.x, 3.12.x)
+>
+> The stable branches don't merge from main — they only receive carefully cherry-picked security and bugfix commits. Cherry-pick is the mechanism that makes long-term stable release branches possible.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

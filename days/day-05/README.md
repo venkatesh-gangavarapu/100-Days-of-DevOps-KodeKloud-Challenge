@@ -221,4 +221,87 @@ SELINUXTYPE=targeted    # Policy type:
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: A junior engineer runs `setenforce 0` to fix an SELinux-blocked service in production. What's wrong with this, and what should they have done instead?**
+
+> `setenforce 0` only changes the runtime state — it reverts to `enforcing` on the next reboot. The real problem is unresolved: the service is still misconfigured or missing the right SELinux context.
+>
+> The correct approach: use `audit2allow` to understand *why* SELinux blocked the operation, then either fix the file context with `restorecon` or create a proper policy module. Disabling enforcement hides the problem without fixing it — and the next reboot brings it back.
+
+---
+
+**Q2: What is the difference between `SELINUX=disabled`, `SELINUX=permissive`, and `SELINUX=enforcing`? When would you use each?**
+
+| State | Behaviour | Use Case |
+|-------|-----------|---------|
+| `enforcing` | Blocks and logs violations | Production — fully hardened |
+| `permissive` | Logs violations only | Troubleshooting — see what would be blocked |
+| `disabled` | SELinux not loaded | Pre-configuration, compatibility testing |
+
+> In production, always run `enforcing`. Use `permissive` temporarily to diagnose issues — never as a permanent state. `disabled` is rare: only for environments where SELinux is being phased out after careful planning.
+
+---
+
+**Q3: How do you diagnose what SELinux is blocking without disabling it?**
+
+```bash
+# Check for recent SELinux denials
+sudo ausearch -m avc -ts recent
+
+# Or read the audit log directly
+sudo grep "denied" /var/log/audit/audit.log | tail -20
+
+# Get human-readable explanation
+sudo audit2why < /var/log/audit/audit.log
+
+# See what context a file has
+ls -Z /path/to/file
+
+# See what context a process has
+ps auxZ | grep httpd
+```
+
+> The audit log is your best friend. `audit2why` explains denials in plain English — it tells you exactly which policy rule triggered and often suggests a fix.
+
+---
+
+**Q4: After copying files to `/var/www/html/`, Apache returns 403 Forbidden even though permissions are correct. What's the SELinux fix?**
+
+```bash
+# Files copied from /tmp/ retain tmp_t label — Apache can't read them
+ls -Z /var/www/html/
+# system_u:object_r:tmp_t:s0  index.html  ← wrong label
+
+# Fix: restore correct context
+sudo restorecon -Rv /var/www/html/
+# system_u:object_r:httpd_sys_content_t:s0  index.html  ✅
+```
+
+> This is the most common SELinux issue for web engineers. Files copied or moved from non-standard locations inherit the source label. `restorecon` applies the correct context based on the directory's policy.
+
+---
+
+**Q5: How do you permanently disable SELinux in a way that survives a reboot?**
+
+```bash
+# Edit the config file
+sudo sed -i 's/^SELINUX=.*/SELINUX=disabled/' /etc/selinux/config
+
+# Verify
+grep "^SELINUX=" /etc/selinux/config
+# SELINUX=disabled
+
+# Note: setenforce 0 is runtime only — does NOT survive reboot
+# The config file change takes effect after the next reboot
+```
+
+> The only permanent change is in `/etc/selinux/config`. `setenforce 0` is frequently misunderstood as a "fix" — it's a temporary workaround that resets at every boot.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

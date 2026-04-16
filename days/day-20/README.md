@@ -354,4 +354,107 @@ sudo journalctl -u php-fpm -n 30
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: `curl http://stapp01:8098/index.php` shows the raw PHP code instead of executing it. What's wrong?**
+
+> nginx doesn't have the `location ~ \.php$` FastCGI block, OR the block exists but `SCRIPT_FILENAME` is missing. When nginx doesn't know what to do with `.php` files, it serves them as plain text downloads.
+>
+> ```nginx
+> location ~ \.php$ {
+>     fastcgi_pass   unix:/var/run/php-fpm/default.sock;
+>     fastcgi_index  index.php;
+>     fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;  ← critical
+>     include        fastcgi_params;
+> }
+> ```
+>
+> `SCRIPT_FILENAME` tells php-fpm which file to execute. Without it, php-fpm may execute nothing or return empty output. This is the #1 php-fpm configuration mistake.
+
+---
+
+**Q2: `curl` returns `502 Bad Gateway` for PHP requests. How do you diagnose the socket communication failure?**
+
+```bash
+# Step 1: Does the socket file exist?
+ls -la /var/run/php-fpm/default.sock
+# If missing — php-fpm didn't start or wrong socket path in config
+
+# Step 2: Check php-fpm is running
+sudo systemctl status php-fpm
+
+# Step 3: Check nginx can access the socket
+ls -la /var/run/php-fpm/default.sock
+# srw-rw---- 1 nginx nginx ...  ← nginx must own it
+
+# Step 4: Check SELinux
+sudo setsebool -P httpd_can_network_connect 1
+sudo ausearch -m avc -ts recent | grep nginx
+
+# Step 5: Check nginx error log for the exact error
+sudo tail -20 /var/log/nginx/error.log
+```
+
+---
+
+**Q3: Why is a Unix socket faster than a TCP socket for nginx-to-php-fpm communication?**
+
+> A Unix socket communicates through the filesystem (kernel memory buffer) — no TCP/IP stack processing, no port allocation, no loopback interface, no packet framing. It's inter-process communication at the OS level.
+>
+> TCP `127.0.0.1:9000` still processes through the full TCP/IP stack even though it never leaves the machine — connection setup, ACK/SYN handshakes, port binding overhead.
+>
+> For high-traffic PHP applications, Unix sockets reduce latency by 10-20% and handle more concurrent requests. Always prefer Unix sockets when nginx and php-fpm are on the same server.
+
+---
+
+**Q4: php-fpm is running but nginx can't connect to the socket. The error is "13: Permission denied". What's wrong?**
+
+```bash
+# Check socket ownership
+ls -la /var/run/php-fpm/default.sock
+# srw-rw---- 1 apache apache ...  ← nginx can't read apache-owned socket!
+
+# Fix: change socket owner to nginx in php-fpm pool config
+sudo vi /etc/php-fpm.d/www.conf
+# listen.owner = nginx
+# listen.group = nginx
+# listen.mode = 0660
+
+sudo systemctl restart php-fpm
+ls -la /var/run/php-fpm/default.sock
+# srw-rw---- 1 nginx nginx ...  ✅
+```
+
+> The socket is a file. If it's owned by `apache` but nginx runs as `nginx`, nginx can't open it. Socket ownership must match the nginx process user.
+
+---
+
+**Q5: How does this nginx + php-fpm architecture map to modern container deployments?**
+
+> In Docker, nginx and php-fpm typically run as **separate containers** in the same pod (Kubernetes) or service (Docker Compose). The Unix socket doesn't work across containers — TCP is used instead:
+>
+> ```yaml
+> # docker-compose.yml
+> services:
+>   nginx:
+>     image: nginx
+>     depends_on: [php]
+>   php:
+>     image: php:8.2-fpm
+>     # nginx connects to php:9000 (TCP, not Unix socket)
+> ```
+>
+> ```nginx
+> # nginx.conf in container
+> fastcgi_pass php:9000;   # TCP to php-fpm container
+> ```
+>
+> Same architecture, different transport. Understanding the Unix socket version makes the containerized TCP version immediately clear.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

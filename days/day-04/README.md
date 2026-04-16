@@ -203,4 +203,73 @@ chmod a=rx file     # Set read+execute for all, remove write from all
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: A deployment pipeline copies a script to a server but it fails with "Permission denied" when executed. What's the diagnostic and fix?**
+
+```bash
+# Diagnose
+ls -l /path/to/script.sh
+# -rw-r--r-- 1 root root 1234 Jan 28 script.sh  ← no x bit
+
+# Fix
+chmod 755 /path/to/script.sh
+
+# Verify
+ls -l /path/to/script.sh
+# -rwxr-xr-x 1 root root 1234 Jan 28 script.sh  ✅
+```
+
+> In CI/CD pipelines, files are typically pushed without execute permission as a security practice — the permission is then explicitly set as a controlled step. This is intentional, not a bug.
+
+---
+
+**Q2: What's the difference between `chmod +x` and `chmod 755`? Which should you use in production?**
+
+> `chmod +x` adds execute bit relative to the current permissions — if a file was `640`, it becomes `750`. `chmod 755` sets permissions absolutely — always results in `rwxr-xr-x` regardless of current state.
+>
+> For production scripts: **use `chmod 755` (octal) for precision**. It's explicit, predictable, and idempotent. You always know exactly what you're setting.
+
+---
+
+**Q3: Why is `chmod 777` considered dangerous and when is it ever acceptable?**
+
+> `777` grants write permission to everyone — any user on the system can modify or overwrite the file. This creates risks:
+> - Malicious user overwrites a script that runs as root
+> - Accidental modification during concurrent access
+> - SELinux and some security tools flag `777` files
+>
+> It's almost never acceptable in production. The only legitimate use case is a temporary shared scratch directory — and even then, a sticky bit (`chmod 1777`) is the correct approach, not `777`.
+
+---
+
+**Q4: In an Ansible playbook, how do you set correct permissions on a deployed script?**
+
+```yaml
+- name: Deploy backup script
+  ansible.builtin.copy:
+    src: backup.sh
+    dest: /scripts/backup.sh
+    owner: tony
+    group: tony
+    mode: '0755'
+```
+
+> The `mode` parameter accepts octal strings (`'0755'`) or symbolic (`'u+x'`). Octal is preferred for clarity. Setting `owner` and `mode` in the same task ensures the file is correct in one shot — no separate `chmod` step needed.
+
+---
+
+**Q5: How does the execute bit on a directory work differently than on a file?**
+
+> On a **file**, execute means you can run it as a program.
+> On a **directory**, execute means you can `cd` into it and access its contents. Without the execute bit on a directory, even if you have read permission, you can list the directory (`ls`) but cannot access any files inside.
+>
+> This is why directory permissions are typically `755` (not `644`) — the `x` bit is needed for traversal, not just listing.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

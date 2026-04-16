@@ -292,4 +292,88 @@ Apache unreachable on port 3002?
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: Apache starts but immediately exits with no obvious error in `systemctl status`. Where do you look?**
+
+```bash
+# systemctl status shows the exit code but not the reason
+sudo systemctl status httpd
+# Active: failed (Result: exit-code)
+
+# Dive into journalctl for the launch sequence
+sudo journalctl -u httpd -n 30 --no-pager
+
+# Then Apache's own error log
+sudo tail -30 /var/log/httpd/error_log
+
+# Validate config — a syntax error causes immediate exit
+sudo httpd -t
+# Syntax error on line 92: ...
+```
+
+> When a service starts and immediately dies, always check: `journalctl` for init-layer errors, then the application's own error log. `httpd -t` is the fastest diagnostic — if it says "Syntax OK" the config isn't the issue.
+
+---
+
+**Q2: Why must you add port 3002 to SELinux's `http_port_t` before Apache can bind to it?**
+
+> Apache runs as `httpd_t` in SELinux. The kernel enforces a policy that says `httpd_t` can only bind to ports listed in `http_port_t`. Port 3002 isn't there by default — only standard web ports (80, 443, 8080, etc.) are.
+>
+> When Apache tries to bind to 3002, SELinux intercepts the syscall, checks the policy, finds no match, and denies it. Apache exits with an obscure error. The fix:
+> ```bash
+> sudo semanage port -a -t http_port_t -p tcp 3002
+> ```
+> This adds 3002 to the allowed list — Apache can now bind successfully.
+
+---
+
+**Q3: How would you check Apache's status across all 3 app servers with a single command from the jump host?**
+
+```bash
+for host in stapp01 stapp02 stapp03; do
+  echo -n "$host: "
+  ssh $host "sudo systemctl is-active httpd" 2>/dev/null || echo "unreachable"
+done
+
+# For more detail:
+for host in stapp01 stapp02 stapp03; do
+  echo "=== $host ==="
+  ssh $host "sudo systemctl status httpd --no-pager | grep -E 'Active|Listen'"
+done
+```
+
+> This loop pattern is the foundation of fleet operations. In production with 100+ servers, you'd replace the loop with Ansible: `ansible appservers -m service -a "name=httpd state=started"`.
+
+---
+
+**Q4: `curl http://stapp01:3002` returns HTTP 403 after you set it up. Is the service broken?**
+
+> No — 403 Forbidden means Apache is running and responding on port 3002. The 403 occurs because there's no `index.html` or any files in the document root to serve. Apache correctly returns 403 when directory listing is disabled and no index file exists.
+>
+> `HTTP 403` = Apache is up and working ✅  
+> `Connection refused` = Apache not running or wrong port ❌  
+> `Connection timed out` = Firewall blocking ❌
+
+---
+
+**Q5: What does `httpd -t` actually check and why should you run it before every Apache restart?**
+
+```bash
+sudo httpd -t
+# Syntax OK  ← safe to restart
+
+# If there's an error:
+# AH00526: Syntax error on line 42 of /etc/httpd/conf/httpd.conf:
+# Invalid command 'Listenn', perhaps misspelled or defined by a module not included
+```
+
+> `httpd -t` parses and validates the entire Apache config — `httpd.conf` and all included files — without starting the server. A single typo in a config file will crash Apache on restart and take down all virtual hosts. Running `httpd -t` first catches the error before it causes an outage. Make it a habit: **never restart Apache without running `httpd -t` first**.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

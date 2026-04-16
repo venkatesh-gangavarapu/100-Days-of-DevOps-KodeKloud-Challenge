@@ -244,4 +244,122 @@ Knowing which tool to reach for — and more importantly why — is what separat
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: A developer accidentally committed an API key to a public GitHub repository. `git reset --hard` + force push won't fully solve it. Why, and what's the complete remediation?**
+
+```bash
+# Step 1: Immediately revoke the exposed key in the provider dashboard
+# (AWS IAM, GitHub Settings, Stripe dashboard, etc.)
+
+# Step 2: Remove from history using git filter-repo (not filter-branch, deprecated)
+pip install git-filter-repo
+git filter-repo --path secrets.env --invert-paths  # Remove file entirely
+# OR remove specific content:
+git filter-repo --replace-text <(echo 'sk_live_abc123==>REMOVED')
+
+# Step 3: Force push ALL branches
+git push --force --all origin
+git push --force --tags origin
+
+# Step 4: Notify team — everyone must re-clone (local copies have the key)
+# Step 5: Rotate the credential to a new value
+```
+
+> `git reset --hard` only cleans the tip of one branch. The commit still exists in GitHub's cache, other branches, tags, forks, and anyone's local clone. The only correct sequence is: revoke first (assume it's compromised), then clean history with `git filter-repo`, then rotate to a new credential.
+
+---
+
+**Q2: You ran `git reset --hard` but realized immediately that you reset to the wrong commit. How do you recover the lost commits?**
+
+```bash
+# git reflog tracks ALL HEAD movements — reset doesn't destroy this
+git reflog
+
+# Output example:
+# abc1234 HEAD@{0}  reset: moving to abc1234
+# def5678 HEAD@{1}  commit: some work you want back
+# ghi9012 HEAD@{2}  commit: more work
+
+# The commit you want is still in the object store
+# Reset back to where you were before the hard reset
+git reset --hard def5678
+
+# Or cherry-pick specific commits you want to recover
+git cherry-pick def5678
+```
+
+> `git reflog` is the safety net for `git reset --hard`. Git keeps all commits in its object store for at least 30 days (configurable via `gc.reflogExpire`). As long as you haven't run `git gc` aggressively, the commits are recoverable. `reflog` is the first command to run after any destructive git operation.
+
+---
+
+**Q3: What's the difference between `git reset --hard HEAD~1`, `git reset --soft HEAD~1`, and `git reset --mixed HEAD~1`? When do you use each?**
+
+```bash
+# --soft: Move HEAD back, keep changes STAGED
+git reset --soft HEAD~1
+# Use case: "I want to redo my commit message or squash with the next commit"
+git commit -m "Better commit message"  # Recommit staged changes
+
+# --mixed (default): Move HEAD back, unstage changes, keep files
+git reset HEAD~1   # same as --mixed
+# Use case: "I want to undo the commit and re-stage selectively"
+git add specific-file.txt
+git commit -m "Commit only this file"
+
+# --hard: Move HEAD back, discard all changes
+git reset --hard HEAD~1
+# Use case: "This commit is garbage, I want to start over completely"
+# WARNING: Changes are gone without reflog recovery
+```
+
+> The mental model: `--soft` removes the commit but keeps your work staged. `--mixed` removes the commit and unstages your work. `--hard` removes the commit and deletes your work. Each mode removes one "layer" of Git state.
+
+---
+
+**Q4: After force pushing to clean up test commits, a team member's `git pull` fails with "fatal: refusing to merge unrelated histories". How do you help them?**
+
+```bash
+# Their local branch has the old commits that no longer exist on origin
+# They need to reset their local master to match remote
+
+# Option 1: Discard their local changes and match remote (safest)
+git fetch origin
+git reset --hard origin/master
+
+# Option 2: If they have local commits to preserve
+git fetch origin
+git rebase origin/master  # replay their local commits on new history
+# If that fails:
+git log --oneline HEAD...origin/master  # see the divergence
+git cherry-pick <their-commit-hashes>   # cherry-pick their work onto clean base
+
+# Prevention: Coordinate before force push
+# Announce in team chat: "I'm force pushing to master at 14:00, everyone commit/push your work first"
+```
+
+> Force pushing to a shared branch requires team coordination. The "unrelated histories" error means Git sees two completely separate commit graphs with no common ancestor. The safest recovery is `git reset --hard origin/master` after fetching — this discards their stale local state and aligns with the rewritten remote.
+
+---
+
+**Q5: In what real-world scenarios would `git reset --hard` + force push be acceptable on a production repository?**
+
+> Acceptable scenarios (with caveats):
+>
+> 1. **Removing accidentally committed secrets** — Even on production repos, you must clean secrets. Coordinate a brief freeze, force push, require team re-clones.
+>
+> 2. **Squashing before a public release** — Many teams squash messy development history before tagging a release. Announce it, do it on a short window, tag the release after.
+>
+> 3. **Personal/test repositories** — Like this task — when it's explicitly a test repo and you are the only user.
+>
+> 4. **Pre-merge feature branch cleanup** — Force pushing your own unshared feature branch before opening a PR is standard practice (nobody else has pulled it).
+>
+> **Never acceptable**: Quiet force push to `main`/`master` without team coordination, or on any branch multiple people are actively working on.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

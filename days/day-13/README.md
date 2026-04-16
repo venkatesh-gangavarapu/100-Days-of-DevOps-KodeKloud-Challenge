@@ -278,4 +278,91 @@ Inbound packet (port 6000)
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: You added a ACCEPT rule for the LBR and a DROP rule for everyone else, but the LBR is also getting blocked. What's wrong?**
+
+```bash
+# Check rule order
+sudo iptables -L INPUT -n --line-numbers
+
+# If DROP is at line 1 and ACCEPT is at line 2 — that's the problem
+# iptables is first-match-wins: DROP fires for ALL traffic including LBR
+
+# Fix: delete wrong order and re-add correctly
+sudo iptables -D INPUT 1                   # delete the misplaced DROP
+sudo iptables -D INPUT 1                   # delete the now-first ACCEPT
+# Re-add in correct order:
+sudo iptables -I INPUT -p tcp --dport 6000 -s 172.16.238.14 -j ACCEPT  # LBR first
+sudo iptables -A INPUT -p tcp --dport 6000 -j DROP                       # everyone else
+```
+
+> This is the single most common iptables whitelist mistake. ORDER IS EVERYTHING. ACCEPT for the allowed source must be above DROP for all others.
+
+---
+
+**Q2: Why use `DROP` instead of `REJECT` when blocking unauthorized traffic?**
+
+> `REJECT` sends back an ICMP error or TCP RST — the client gets an explicit "connection refused" response. This tells attackers the port exists and is managed.
+>
+> `DROP` silently discards — the client gets no response and times out. From an attacker's perspective, they can't distinguish a `DROP` from a firewall from a host that doesn't exist. Reduces information leakage. In security hardening, silence is better than an explicit rejection.
+
+---
+
+**Q3: How do you verify that your whitelist rule is actually working — that LBR gets in and others get blocked?**
+
+```bash
+# Test from LBR (stlb01) — should succeed:
+ssh loki@stlb01
+curl http://stapp01:6000
+
+# Test from jump host — should timeout (DROP = no response):
+curl --connect-timeout 5 http://stapp01:6000
+# Expected: curl: (28) Connection timed out
+
+# Check packet counters to confirm traffic is hitting the rules:
+sudo iptables -L INPUT -n -v --line-numbers
+# The 'pkts' and 'bytes' columns show traffic hitting each rule
+```
+
+> Always test both directions: the allowed source should work AND another host should be blocked. Testing only one side doesn't prove the rule is correct.
+
+---
+
+**Q4: After a server reboot, the iptables whitelist rules are gone. What went wrong?**
+
+```bash
+# Rules were added but not persisted
+sudo iptables -L INPUT -n   # rules gone after reboot
+
+# Fix: install iptables-services and save
+sudo yum install -y iptables-services
+sudo systemctl enable iptables
+sudo iptables-save | sudo tee /etc/sysconfig/iptables
+
+# Verify the saved file has your rules:
+sudo grep 6000 /etc/sysconfig/iptables
+```
+
+> `iptables` rules live in memory by default. `iptables-services` provides the systemd service that loads saved rules at boot from `/etc/sysconfig/iptables`. Without it, every reboot wipes your firewall rules.
+
+---
+
+**Q5: In AWS, how does this iptables host-level whitelist map to cloud concepts?**
+
+> AWS Security Groups are the cloud equivalent of iptables rules — they control inbound/outbound traffic at the instance level. The whitelist pattern maps directly:
+>
+> | iptables | AWS Security Group |
+> |----------|-------------------|
+> | `ACCEPT -s 172.16.238.14 --dport 6000` | Inbound rule: Port 6000, Source: LBR security group |
+> | `DROP --dport 6000` | No other inbound rule for port 6000 = implicit deny |
+>
+> In AWS, you'd create a security group for the app servers that only allows port 6000 from the LBR security group. Same concept, different interface.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

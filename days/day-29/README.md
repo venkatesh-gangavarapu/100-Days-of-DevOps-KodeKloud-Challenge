@@ -254,4 +254,103 @@ Each stage is tracked and timestamped — creating a full audit trail of who pro
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: Your team wants to enforce that every merge to `main` requires at least two approved reviews and all CI checks to pass. How do you configure this in GitHub?**
+
+```bash
+# Via GitHub UI: Settings → Branches → Add rule for "main"
+# Or via GitHub CLI:
+gh api repos/{owner}/{repo}/branches/main/protection \
+  --method PUT \
+  --field required_pull_request_reviews[required_approving_review_count]=2 \
+  --field required_status_checks[strict]=true \
+  --field required_status_checks[contexts][]="ci/tests" \
+  --field enforce_admins=true
+```
+
+> Branch protection rules are the gatekeeper mechanism every mature team uses. Setting `required_approving_review_count=2` means no single engineer can approve their own change unilaterally. `enforce_admins=true` is critical — without it, repository admins can bypass all rules, which defeats the purpose in a compliance context.
+
+---
+
+**Q2: A developer bypassed the PR process by pushing directly to `main`. How does this happen, and how do you prevent it permanently?**
+
+> Direct pushes to protected branches happen when: (1) branch protection rules aren't configured, (2) the pusher has admin privileges and `enforce_admins` is off, or (3) the rule was temporarily disabled and never re-enabled.
+>
+> Prevention:
+> ```bash
+> # Gitea: Repository Settings → Branches → Protected Branches
+> # Enable "Require pull request" for master/main
+> # Check "Restrict push" to no one
+>
+> # GitHub: enforce_admins: true ensures even admins can't bypass
+> # Audit log: Settings → Audit Log to see who disabled protection
+> ```
+>
+> For critical repos, set up an alert (webhook or audit log monitoring) that fires when branch protection rules change — a rule being disabled is a high-severity security event.
+
+---
+
+**Q3: Tom approved the PR without reading the diff. In a production incident, bad code gets merged. What process change prevents this?**
+
+> Rubber-stamp approvals are a real organizational problem. Technical fixes:
+>
+> 1. **Required number of reviewers > 1** — If two people must approve, the odds both rubber-stamp drop significantly
+> 2. **CODEOWNERS files** — Automatically assign domain experts as required reviewers for their areas
+> 3. **Review checklists** — PR templates that list items reviewers must verify before approving
+> 4. **Dismiss stale reviews** — When new commits are pushed, old approvals are invalidated (reviewers must re-approve)
+>
+> Process fix: Make review effectiveness a metric. Track incident post-mortems back to which PR introduced the bug and who approved it — accountability through visibility.
+
+---
+
+**Q4: A PR has been open for two weeks with no reviews. How do you handle stale PRs in a large team?**
+
+```bash
+# GitHub: Use GitHub Actions to auto-remind reviewers
+# .github/workflows/stale-pr.yml
+on:
+  schedule:
+    - cron: '0 9 * * 1'  # Every Monday at 9am
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v8
+        with:
+          stale-pr-message: 'This PR has been inactive for 7 days. Please review or close.'
+          days-before-pr-stale: 7
+          days-before-pr-close: 14
+```
+
+> Stale PRs are a team health indicator — they pile up when reviews aren't prioritized. Automated reminders help, but the real fix is cultural: schedule a daily PR review window, keep PRs small (< 400 lines), and set team agreements on review SLAs (e.g., "reviews within 1 business day").
+
+---
+
+**Q5: After a PR is merged, the feature branch still exists on the remote. How do you clean it up automatically?**
+
+```bash
+# GitHub: Repository Settings → "Automatically delete head branches" ✅
+# This deletes the feature branch immediately after merge
+
+# Manual cleanup:
+git push origin --delete story/fox-and-grapes   # Delete remote branch
+git branch -d story/fox-and-grapes              # Delete local branch
+
+# List and clean up all stale remote branches:
+git remote prune origin                          # Remove tracking refs for deleted remotes
+git branch -r                                    # Confirm cleanup
+
+# Bulk delete merged branches:
+git branch --merged main | grep -v main | xargs git branch -d
+```
+
+> Accumulated stale branches are a maintenance burden — they clutter `git branch -a` output, make CI slower (if CI runs on all branches), and confuse new team members. Enable auto-delete after merge; developers can always recreate a branch if needed.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

@@ -131,4 +131,71 @@ getent passwd rose | cut -d: -f7
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: Why would you create a user with `/sbin/nologin` instead of just not creating a user at all?**
+
+> Services like backup agents, Jenkins, or Prometheus need to *own processes and files* — they need a UID/GID for filesystem permissions. But they should never accept a login session. `/sbin/nologin` gives you the identity without the interactive access.
+
+---
+
+**Q2: What's the difference between `/sbin/nologin` and `/bin/false`?**
+
+> Both block interactive login, but `/sbin/nologin` returns a human-readable message: *"This account is currently not available."* — useful when someone accidentally tries `su - jenkins`. `/bin/false` just silently exits with a non-zero code. In enterprise RHEL/CentOS environments, `/sbin/nologin` is the preferred standard.
+
+---
+
+**Q3: How do you verify that a user was created correctly with the right shell?**
+
+```bash
+grep "rose" /etc/passwd
+# or more targeted:
+getent passwd rose | cut -d: -f7
+```
+
+> The 7th field (colon-delimited) in `/etc/passwd` is the shell. Always verify after creation — especially in automation scripts where silent failures can break downstream services.
+
+---
+
+**Q4: Can a service account with `/sbin/nologin` still run cron jobs or systemd services?**
+
+> Yes. The shell restriction only blocks *interactive login* (SSH, su, login TTY). A systemd service running as `User=rose` will work perfectly — systemd doesn't spawn an interactive shell; it executes the binary directly.
+
+---
+
+**Q5: In a real incident, a backup service is failing with "Permission denied". How do you check if the service user exists and is set up correctly?**
+
+```bash
+id rose                         # check UID/GID exists
+getent passwd rose              # confirm shell and home dir
+ls -la /backup/path             # check ownership
+systemctl status backup-agent   # check if running under correct user
+```
+
+> You'd work down from "does the user exist?" → "does it own the right files?" → "is the service configured to use it?" Never assume — verify at each layer.
+
+---
+
+**Q6: What's the security risk of *not* using a dedicated service account and instead running a backup agent as root?**
+
+> If the backup agent is compromised (e.g., remote code execution via a vulnerability), an attacker gets root on the host. With a dedicated low-privilege account, the blast radius is limited to what that account can access. Principle of least privilege.
+
+---
+
+**Q7: How would you bulk-create 10 service accounts like this in an automated way?**
+
+```bash
+for user in agent1 agent2 agent3; do
+  useradd -s /sbin/nologin -M "$user"
+done
+```
+
+> The `-M` flag skips creating a home directory — appropriate for pure service accounts that don't need one. In production, you'd do this via Ansible's `user` module rather than raw shell scripts.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

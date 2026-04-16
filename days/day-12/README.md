@@ -187,4 +187,96 @@ sudo iptables-save | sudo tee /etc/iptables/rules.v4
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: A service is running and bound to the correct port but `curl` from another host still times out. What's your diagnostic sequence?**
+
+```bash
+# Layer 1: Is the service running?
+sudo systemctl status httpd              # ✅ running
+
+# Layer 2: Is it bound to the right port?
+sudo ss -tlnp | grep httpd              # ✅ port 6300
+
+# Layer 3: Can I reach it locally?
+curl http://localhost:6300              # ✅ works locally
+
+# Layer 4: Firewall blocking remote access?
+sudo iptables -L INPUT -n | grep 6300  # ❌ no ACCEPT rule
+# OR for firewalld:
+sudo firewall-cmd --list-all
+
+# Fix:
+sudo iptables -I INPUT -p tcp --dport 6300 -j ACCEPT
+```
+
+> If it works locally but not remotely — it's always the firewall (or SELinux on RHEL). Work down these four layers every time.
+
+---
+
+**Q2: What's the difference between `iptables -I` and `iptables -A` when adding firewall rules?**
+
+> `-I` (insert) places the rule at the **top** of the chain — it's evaluated first. `-A` (append) places it at the **bottom** — evaluated last.
+>
+> For ACCEPT rules on specific ports, always use `-I`. If you use `-A` and there's a DROP-all rule above it, your ACCEPT rule is never reached — the DROP fires first and the traffic is blocked.
+
+---
+
+**Q3: How do you make iptables rules persist across server reboots?**
+
+```bash
+# RHEL/CentOS (with iptables-services installed)
+sudo service iptables save
+# Saves to: /etc/sysconfig/iptables
+
+# Or manually:
+sudo iptables-save | sudo tee /etc/sysconfig/iptables
+
+# Debian/Ubuntu:
+sudo iptables-save | sudo tee /etc/iptables/rules.v4
+
+# Verify rules survive a reload:
+sudo systemctl restart iptables
+sudo iptables -L INPUT -n | grep 6300
+```
+
+> `iptables` rules are in-memory only by default — a reboot wipes them. Always persist immediately after adding rules. This is a very common oversight in incident response: fix works, then mysteriously breaks the next morning after a maintenance reboot.
+
+---
+
+**Q4: In a production environment, how do you decide between `firewalld` and `iptables`?**
+
+> The environment dictates the choice — don't switch unless necessary:
+> - RHEL 7+, CentOS 7+, Fedora → `firewalld` is the default and expected
+> - Older RHEL/CentOS 6, some minimal installs → `iptables` directly
+> - Kubernetes nodes → often both disabled in favor of network policy (Calico, Cilium)
+>
+> Check which is present: `which firewall-cmd` vs `which iptables`. Then use what's there. Mixing both on the same server causes unpredictable behavior — pick one.
+
+---
+
+**Q5: What's the SELinux layer check you should always include in a "service unreachable" diagnostic?**
+
+```bash
+# Check if SELinux is enforcing
+getenforce
+
+# Check if the port is in the allowed list for the service type
+sudo semanage port -l | grep http_port_t
+
+# If port 6300 is missing:
+sudo semanage port -a -t http_port_t -p tcp 6300
+
+# Check for recent SELinux denials
+sudo ausearch -m avc -ts recent | grep httpd
+```
+
+> On SELinux-enforcing RHEL/CentOS systems, four layers must all pass: service running → correct port → firewall ACCEPT → SELinux allows the port. Missing any one layer breaks connectivity.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

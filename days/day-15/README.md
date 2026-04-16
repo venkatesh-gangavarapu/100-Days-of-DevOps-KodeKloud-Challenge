@@ -317,4 +317,116 @@ server {
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: `curl https://stapp02/` fails with "SSL certificate problem: self signed certificate". How do you test it anyway, and what does this mean in production?**
+
+```bash
+# For testing self-signed certs:
+curl -k https://stapp02/         # -k = ignore cert verification
+curl --insecure https://stapp02/
+
+# In production: this error means the certificate is NOT trusted by a CA
+# Solutions:
+# 1. Use Let's Encrypt (free, auto-renewed, trusted):
+sudo certbot --nginx -d yourdomain.com
+
+# 2. Use an internal CA cert and distribute it to clients:
+sudo cp internal-ca.crt /etc/pki/ca-trust/source/anchors/
+sudo update-ca-trust
+
+# 3. For testing only: use -k (never in production automation)
+```
+
+> Self-signed certs are fine for internal services where you control all clients. For anything internet-facing or where clients aren't under your control, use Let's Encrypt or a commercial CA.
+
+---
+
+**Q2: nginx fails to start after adding SSL config. What do you check first?**
+
+```bash
+# Config syntax check — always first
+sudo nginx -t
+
+# Common errors and fixes:
+# "PEM_read_bio_X509_AUX() failed" → wrong cert file path or corrupt cert
+# "SSL_CTX_use_PrivateKey_file() failed" → key path wrong or permissions
+# "key values mismatch" → cert and key are from different pairs
+
+# Check certificate permissions
+ls -la /etc/nginx/ssl/
+# nautilus.key must be 600 — not 644 or 640
+
+# Verify cert/key match:
+openssl x509 -noout -modulus -in nautilus.crt | md5sum
+openssl rsa  -noout -modulus -in nautilus.key | md5sum
+# Hashes must match — if different, wrong key for this cert
+```
+
+---
+
+**Q3: Why must the private key be `chmod 600` and not `644`?**
+
+> The private key is the most sensitive file on the server. If it has `644` (world-readable), any user on the system can read it, copy it, and use it to impersonate your server.
+>
+> nginx actually enforces this: on some configurations it will refuse to start if the private key has group or world read permissions. `600` means only the owner (root) can read it. nginx, running as root at startup, reads the key once and then drops privileges.
+
+---
+
+**Q4: After moving certs from `/tmp/` to `/etc/nginx/ssl/`, nginx returns 403 or can't read the files. What's the SELinux issue?**
+
+```bash
+# Files moved from /tmp/ keep tmp_t SELinux label
+ls -Z /etc/nginx/ssl/
+# system_u:object_r:tmp_t:s0  nautilus.crt  ← wrong label
+
+# Fix: restore correct context
+sudo restorecon -Rv /etc/nginx/ssl/
+# system_u:object_r:cert_t:s0  nautilus.crt  ✅
+
+# Verify
+ls -Z /etc/nginx/ssl/
+```
+
+> `tmp_t` files are inaccessible to nginx's `httpd_t` process. `restorecon` relabels them with the correct `cert_t` context. This is always required when moving files from `/tmp/` to system directories on SELinux-enforcing systems.
+
+---
+
+**Q5: What additional SSL hardening would you add in a production nginx config beyond the basics?**
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name example.com;
+
+    ssl_certificate     /etc/nginx/ssl/cert.crt;
+    ssl_certificate_key /etc/nginx/ssl/cert.key;
+
+    # Only modern TLS versions
+    ssl_protocols TLSv1.2 TLSv1.3;
+
+    # Strong cipher suites (ECDHE preferred)
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256;
+    ssl_prefer_server_ciphers off;
+
+    # HSTS: force HTTPS for 2 years, include subdomains
+    add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+
+    # Prevent clickjacking
+    add_header X-Frame-Options DENY;
+
+    # Enable OCSP stapling (faster cert validation for clients)
+    ssl_stapling on;
+    ssl_stapling_verify on;
+}
+```
+
+> These are the Mozilla SSL Configuration Generator "modern" recommendations. In practice, the TLS protocol restriction and HSTS header are the most impactful additions after the basic cert setup.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

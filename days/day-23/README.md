@@ -183,4 +183,86 @@ This cycle is identical whether you're on Gitea, GitHub, GitLab, or Bitbucket.
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: What's the difference between a fork, a clone, and a branch? Engineers often confuse these.**
+
+| Action | Location | Purpose |
+|--------|----------|---------|
+| Fork | Server-side (GitHub/Gitea) | Your own independent server copy |
+| Clone | Local machine | Download any repo to work locally |
+| Branch | Inside a repo (local or remote) | Isolated line of work within the same repo |
+
+> Fork = separate repo. Clone = local copy. Branch = pointer inside a repo. You typically do all three: fork on the server → clone your fork locally → create a branch to work on. They solve different problems at different levels.
+
+---
+
+**Q2: After forking `sarah/story-blog` to `jon/story-blog`, sarah pushes new commits. How does jon get them?**
+
+```bash
+# jon's local clone
+cd story-blog
+
+# Add upstream remote (only needed once)
+git remote add upstream http://gitea/sarah/story-blog
+
+# Fetch and merge latest from sarah's repo
+git fetch upstream
+git checkout main
+git merge upstream/main
+
+# Push synced main to jon's fork
+git push origin main
+```
+
+> The `upstream` remote is the connection back to the original repo. Without it, jon's fork drifts out of date. `git fetch upstream` + `git merge upstream/main` keeps it current. This sync workflow is standard for anyone maintaining a long-lived fork.
+
+---
+
+**Q3: Why does the open-source contribution model require forking instead of just branching in the original repo?**
+
+> You don't have write access to `sarah/story-blog`. Forking gives you a repo you **own** (`jon/story-blog`) where you have full push access. You work there, then propose changes back to the original via a Pull Request — which sarah can review and accept or reject.
+>
+> Branching directly in `sarah/story-blog` would require her to grant you write access — unacceptable for public repos with thousands of contributors. The fork model lets anyone contribute without needing trust upfront.
+
+---
+
+**Q4: In enterprise Gitea/GitLab, when would you fork within the same organization vs just branch?**
+
+> - **Branch**: You're already a member of the project, working on a feature within the team's normal workflow
+> - **Fork (within org)**: You're prototyping a significant experiment that might be abandoned, or you want to maintain an independent version of a shared tool
+>
+> In most enterprise teams, internal contribution goes through branches + PRs. Forks are more common for: inner-source projects where teams consume but don't own the repo, or for maintaining a customized version of a shared library.
+
+---
+
+**Q5: How would a DevOps engineer automate the fork → clone → configure upstream workflow for a new developer onboarding?**
+
+```bash
+#!/bin/bash
+# Gitea API: fork the repo for the new dev
+curl -X POST "http://gitea/api/v1/repos/sarah/story-blog/forks" \
+  -H "Authorization: token ${JON_TOKEN}" \
+  -H "Content-Type: application/json" \
+  -d '{"organization": "jon"}'
+
+# Clone the fork
+git clone "http://gitea/jon/story-blog.git" ~/story-blog
+cd ~/story-blog
+
+# Add upstream
+git remote add upstream "http://gitea/sarah/story-blog.git"
+
+# Verify
+git remote -v
+```
+
+> Most Git platforms expose REST APIs for repo operations. Gitea, GitHub, and GitLab all support creating forks via API — useful for automating developer onboarding in large organizations.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

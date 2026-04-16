@@ -187,4 +187,95 @@ Protocol 2                  # Use SSHv2 only (v1 is broken)
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: A security audit flags `PermitRootLogin yes` on 20 servers. How do you fix this across the entire fleet efficiently?**
+
+```yaml
+# Ansible playbook — fleet-wide SSH hardening
+- name: Disable root SSH login
+  hosts: all
+  tasks:
+    - name: Set PermitRootLogin no
+      ansible.builtin.lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin no'
+        backup: yes
+      notify: Restart sshd
+
+  handlers:
+    - name: Restart sshd
+      ansible.builtin.service:
+        name: sshd
+        state: restarted
+```
+
+> `lineinfile` handles both commented and uncommented variants. The `backup: yes` creates a `.bak` file — safety net before the handler restarts sshd.
+
+---
+
+**Q2: What's the safest procedure for changing `sshd_config` on a production server you're connected to?**
+
+> The golden rule: **never close your current session before testing**. The procedure:
+> 1. Edit `sshd_config`
+> 2. Run `sudo sshd -t` — validates syntax without restarting
+> 3. Restart sshd: `sudo systemctl restart sshd`
+> 4. **Keep your existing session open**
+> 5. Open a **second terminal** and test the SSH connection
+> 6. Only close the original session after the new connection succeeds
+>
+> A single typo in `sshd_config` can lock you out permanently — the existing session is your escape hatch.
+
+---
+
+**Q3: What's the difference between `PermitRootLogin no`, `PermitRootLogin without-password`, and `PermitRootLogin prohibit-password`?**
+
+| Value | Effect |
+|-------|--------|
+| `no` | Root SSH completely blocked — safest |
+| `without-password` | Root can SSH with keys only (no password) |
+| `prohibit-password` | Same as `without-password` (newer alias) |
+| `forced-commands-only` | Root can SSH only for pre-defined commands |
+
+> In most production environments, `no` is correct. `prohibit-password` is used when root SSH with keys is required for specific automation — rare and should require strong justification.
+
+---
+
+**Q4: How do you verify that root login is actually blocked after changing the config?**
+
+```bash
+# Check the config value
+grep "PermitRootLogin" /etc/ssh/sshd_config
+
+# Check sshd is running with the new config
+sudo systemctl status sshd
+
+# Test from another host (will be denied)
+ssh root@stapp01
+# Expected: "Permission denied, please try again."
+
+# Check the auth log for denied root attempts
+sudo tail -f /var/log/secure | grep "root"
+```
+
+---
+
+**Q5: If a CI/CD pipeline needs to SSH into servers as root (legacy system), what's the secure alternative?**
+
+> Never grant root SSH. Instead:
+> 1. Create a dedicated service account (`deploy`) with no-password sudo for only the specific commands the pipeline needs
+> 2. Set up key-based auth for the `deploy` user
+> 3. Use `sudoers` with `NOPASSWD` scoped to specific commands only:
+>    ```
+>    deploy ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart myapp, /usr/bin/cp /tmp/artifact /opt/app
+>    ```
+> This gives the pipeline exactly the privileges it needs — nothing more.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

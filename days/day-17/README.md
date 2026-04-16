@@ -290,4 +290,98 @@ For full application access, production setups typically grant at all three leve
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: An application user gets "FATAL: password authentication failed" when connecting to PostgreSQL. How do you debug it?**
+
+```bash
+# Step 1: Confirm the user exists
+sudo su - postgres
+psql -c "\du" | grep kodekloud_rin
+
+# Step 2: Confirm the database exists
+psql -c "\l" | grep kodekloud_db2
+
+# Step 3: Check grants
+psql -c "\l kodekloud_db2"   # Look for CTc/postgres in access privileges
+
+# Step 4: Test connection as the user
+psql -U kodekloud_rin -d kodekloud_db2 -h localhost
+
+# Step 5: Check pg_hba.conf (auth method for localhost)
+sudo grep "md5\|scram\|trust" /var/lib/pgsql/data/pg_hba.conf
+# If method is 'ident' or 'peer' — password auth won't work for remote connections
+```
+
+> "Password authentication failed" can mean: wrong password, wrong user host config in pg_hba.conf, or the user doesn't have CONNECT privilege on the database.
+
+---
+
+**Q2: Why do you need to `sudo su - postgres` before running `psql`? Can't you just `sudo psql`?**
+
+> PostgreSQL uses **peer authentication** by default for local connections. Peer auth checks that your OS username matches the database role name. The `postgres` OS user maps to the `postgres` DB superuser. If you run `sudo psql` as `peter`, peer auth checks if a role named `peter` exists with superuser privileges — which it doesn't.
+>
+> `sudo su - postgres` switches to the OS `postgres` user first — then peer auth passes. Alternatively, use: `sudo -u postgres psql` (same result, one command).
+
+---
+
+**Q3: What's the difference between `GRANT ALL ON DATABASE` and `GRANT ALL ON ALL TABLES`?**
+
+> `GRANT ALL ON DATABASE kodekloud_db2 TO kodekloud_rin` grants:
+> - CONNECT — can connect to the database
+> - CREATE — can create schemas
+> - TEMPORARY — can create temp tables
+>
+> But NOT table access. For the application to actually SELECT/INSERT/UPDATE data, you need:
+> ```sql
+> \c kodekloud_db2
+> GRANT ALL ON ALL TABLES IN SCHEMA public TO kodekloud_rin;
+> GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO kodekloud_rin;
+> ```
+>
+> This is the most common PostgreSQL privilege mistake — database-level grants don't cascade down to tables.
+
+---
+
+**Q4: How do you rotate a database user's password without downtime?**
+
+```sql
+-- Change the password
+ALTER USER kodekloud_rin WITH PASSWORD 'NewSecureP@ss123';
+-- Takes effect immediately — no restart needed
+```
+
+> Update the application's connection string (environment variable, secret manager, config file) in the same deployment. In Kubernetes, this means updating the Secret and rolling the pods. PostgreSQL accepts the new password immediately — no service restart required.
+
+---
+
+**Q5: In production, how do you securely create a database user without the password appearing in shell history?**
+
+```bash
+# Method 1: Use a heredoc (password in stdin, not command line)
+sudo -u postgres psql << 'EOF'
+CREATE USER kodekloud_rin WITH PASSWORD 'B4zNgHA7Ya';
+EOF
+
+# Method 2: Use PGPASSWORD env var (still risky — shows in process list)
+PGPASSWORD='B4zNgHA7Ya' psql -U kodekloud_rin -d kodekloud_db2 -h localhost
+
+# Method 3: Read password from a file (most secure)
+sudo -u postgres psql -c "CREATE USER kodekloud_rin WITH PASSWORD '$(cat /run/secrets/db_password)';"
+
+# Method 4: Ansible vault
+- name: Create DB user
+  community.postgresql.postgresql_user:
+    name: kodekloud_rin
+    password: "{{ vault_db_password }}"
+```
+
+> Passwords typed directly in shell commands appear in `.bash_history` and process listings (`ps aux`). Use heredocs, env files, or secrets managers in production.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

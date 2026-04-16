@@ -277,4 +277,101 @@ sudo ls -la /var/lib/tomcat/webapps/              # Confirm WAR exploded
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: Tomcat starts successfully but `curl http://stapp03:8083` returns connection refused. How do you diagnose this?**
+
+```bash
+# Step 1: Is Tomcat actually running?
+sudo systemctl status tomcat
+
+# Step 2: What port is it actually bound to?
+sudo ss -tlnp | grep java
+
+# Step 3: Did the WAR deploy correctly?
+sudo ls -la /var/lib/tomcat/webapps/
+# Should show ROOT/ directory (exploded WAR)
+
+# Step 4: Check deployment logs
+sudo cat /var/log/tomcat/catalina.out | tail -50
+# Look for: INFO: Starting ProtocolHandler or ERROR messages
+
+# Step 5: Firewall?
+sudo iptables -L INPUT -n | grep 8083
+```
+
+> "Connection refused" means either: the process isn't running, it's bound to a different port, or a firewall is blocking it. Work through each layer — process → port → firewall.
+
+---
+
+**Q2: What's the difference between `ROOT.war` and `myapp.war` deployment in Tomcat?**
+
+| WAR Name | Context Path | Access URL |
+|----------|-------------|------------|
+| `ROOT.war` | `/` | `http://host:8083/` |
+| `myapp.war` | `/myapp` | `http://host:8083/myapp` |
+| `api.war` | `/api` | `http://host:8083/api` |
+
+> `ROOT.war` is special — it deploys to the root context. Any other filename becomes a URL path. For applications that should be accessible at the base URL (no path suffix), the file must be named `ROOT.war`.
+
+---
+
+**Q3: How do you check Tomcat deployment logs when a WAR deploys but the application returns 404?**
+
+```bash
+# Main deployment log
+sudo tail -100 /var/log/tomcat/catalina.out
+
+# Look for specific patterns:
+sudo grep -E "ERROR|SEVERE|Exception|Deployment" /var/log/tomcat/catalina.out
+
+# Check if ROOT was exploded (WAR was unpacked)
+ls -la /var/lib/tomcat/webapps/ROOT/
+
+# Check if index page exists
+ls /var/lib/tomcat/webapps/ROOT/index.*
+```
+
+> 404 after deployment usually means: the WAR didn't explode (check catalina.out for ClassNotFound or XML parsing errors), the application's URL mapping is different from what you expect, or the `ROOT/` directory was missing after placement.
+
+---
+
+**Q4: Tomcat is running on port 8080 and you need to change it to 8083 without downtime. What's the approach?**
+
+```bash
+# 1. Edit server.xml
+sudo sed -i 's/Connector port="8080"/Connector port="8083"/' /etc/tomcat/server.xml
+
+# 2. Validate the change
+grep 'Connector port' /etc/tomcat/server.xml
+
+# 3. Restart (brief downtime — Tomcat has no hot reload for port changes)
+sudo systemctl restart tomcat
+
+# 4. Verify binding
+sudo ss -tlnp | grep 8083
+```
+
+> Port changes in `server.xml` require a restart — there's no reload mechanism for network listeners. For zero-downtime in production, you'd use a load balancer to drain the server, change the port, restart, then re-add it to the pool.
+
+---
+
+**Q5: In a containerized environment (Docker/Kubernetes), how does Tomcat WAR deployment differ?**
+
+> The concept is identical — Tomcat still deploys WARs from `webapps/`. The difference is packaging: instead of copying a WAR to a running server, you build it into the Docker image:
+>
+> ```dockerfile
+> FROM tomcat:9-jdk11
+> COPY ROOT.war /usr/local/tomcat/webapps/ROOT.war
+> EXPOSE 8080
+> ```
+>
+> In Kubernetes, you'd build this image, push to a registry, and deploy via a Deployment manifest. The WAR still becomes `ROOT/` when the container starts — same Tomcat auto-deploy behavior, just containerized.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

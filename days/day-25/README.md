@@ -309,4 +309,110 @@ Step 13: origin/master → C2 ✅
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: You pushed the feature branch but forgot to push master after merging. The CI pipeline reports master is behind. How do you fix it?**
+
+```bash
+# Check local vs remote state
+git log --oneline origin/master..master
+# Shows commits on local master not yet on origin
+
+# Push master to origin
+git push origin master
+
+# Verify remote is in sync
+git fetch origin
+git log --oneline origin/master
+```
+
+> After merging a feature branch into master locally, you must explicitly push master. The merge commit only exists locally until pushed. CI pipelines check `origin/master` — if you don't push, the pipeline doesn't see the merged code.
+
+---
+
+**Q2: The merge was a fast-forward. What does that mean and when does it NOT fast-forward?**
+
+> **Fast-forward**: master hasn't changed since you branched. Git just moves the master pointer forward to the feature tip — no merge commit created.
+>
+> **Not fast-forward** (creates a merge commit): master has new commits since you branched off. Git creates a merge commit with two parents.
+>
+> ```bash
+> # Force a merge commit even on fast-forward (preserves branch history):
+> git merge --no-ff xfusion
+>
+> # Check if merge will be a fast-forward:
+> git log --oneline master..xfusion     # commits in xfusion not in master
+> git log --oneline xfusion..master     # commits in master not in xfusion (if any → not FF)
+> ```
+>
+> Many teams use `--no-ff` to preserve branch topology in history, making it easier to see which commits belonged to which feature.
+
+---
+
+**Q3: `git push origin xfusion` was rejected with "non-fast-forward". What happened and how do you fix it?**
+
+```bash
+# Someone else pushed to origin/xfusion after you last pulled
+git fetch origin
+git log --oneline origin/xfusion..xfusion   # your commits ahead
+git log --oneline xfusion..origin/xfusion   # their commits you don't have
+
+# Option 1: Merge their changes into yours
+git pull origin xfusion
+git push origin xfusion
+
+# Option 2: Rebase your commits on top of theirs (cleaner history)
+git fetch origin
+git rebase origin/xfusion
+git push origin xfusion
+```
+
+> "Non-fast-forward" push rejection means the remote has commits your local branch doesn't have. Git refuses to overwrite them. Fetch first, integrate, then push.
+
+---
+
+**Q4: How do you write a meaningful commit message? What makes a good vs bad commit message?**
+
+```bash
+# Bad commit messages:
+git commit -m "fix"
+git commit -m "changes"
+git commit -m "wip"
+git commit -m "updated files"
+
+# Good commit messages (imperative mood, explains WHY):
+git commit -m "Add index.html with placeholder content for xfusion branch"
+git commit -m "Fix login redirect loop when session expires"
+git commit -m "Upgrade nginx from 1.20 to 1.24 for CVE-2023-44487 fix"
+```
+
+> Good commit messages: use imperative mood ("Add", not "Added"), are 50 chars or less for the subject, explain WHY not WHAT (the diff shows what), and reference ticket numbers when relevant. Bad messages make `git log` useless and blame archaeology painful.
+
+---
+
+**Q5: What's the difference between `git push origin xfusion` and `git push --set-upstream origin xfusion`?**
+
+```bash
+# First-time push — sets tracking relationship
+git push --set-upstream origin xfusion
+# Or shorter:
+git push -u origin xfusion
+
+# After tracking is set — shorthand works
+git push           # pushes current branch to its tracked remote branch
+git pull           # pulls from tracked remote branch
+
+# Check tracking relationship
+git branch -vv
+# * xfusion  abc1234 [origin/xfusion] Add index.html
+```
+
+> `-u` (set-upstream) creates a tracking relationship between the local branch and the remote branch. After that, plain `git push` and `git pull` know which remote/branch to use without specifying them explicitly.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

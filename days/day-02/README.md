@@ -183,4 +183,78 @@ anita : ! : 19754 : 0 : 99999 : 7 : : 20847 :
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: Why should temporary accounts always have an expiry date set at creation time rather than cleaned up manually later?**
+
+> Manual cleanup is unreliable — people forget. An expired contractor account left active for 6 months is a common audit finding. Setting the expiry at creation time automates enforcement: the account disables itself. In compliance-heavy environments (SOC 2, PCI-DSS), having automated account lifecycle controls is a hard requirement.
+
+---
+
+**Q2: What's the difference between `useradd -e` and `chage -E`? When would you use each?**
+
+> Both set the account expiry date. `useradd -e` is used at creation time as a single-command setup. `chage -E` modifies an existing account — use it when extending or changing the expiry of an account that's already live. In automation scripts, `chage` is preferred for updates because it doesn't risk accidental recreation.
+
+---
+
+**Q3: How do you verify an account's expiry date after setting it?**
+
+```bash
+sudo chage -l anita
+# Shows: Account expires: Jan 28, 2027
+
+# Or check /etc/shadow directly:
+sudo grep "anita" /etc/shadow
+# 8th field = days since epoch → convert with Python:
+python3 -c "import datetime; print(datetime.date(1970,1,1) + datetime.timedelta(days=20847))"
+```
+
+> Always verify with `chage -l` — it's human-readable. The raw `/etc/shadow` value is epoch days, which is useful when scripting or auditing programmatically.
+
+---
+
+**Q4: A user's account expired yesterday and they're locked out. How do you quickly extend it by 30 days?**
+
+```bash
+# Get today's date + 30 days
+NEWEXPIRY=$(date -d "+30 days" +%Y-%m-%d)
+
+# Update the account
+sudo chage -E "$NEWEXPIRY" anita
+
+# Verify
+sudo chage -l anita
+```
+
+> This is a common helpdesk scenario. Automate it if you're extending multiple accounts — a one-liner loop over a list of usernames saves time and avoids typos.
+
+---
+
+**Q5: How does account expiry differ from password expiry, and why does that distinction matter?**
+
+> Account expiry (`chage -E`) disables the entire account on a date — login is completely blocked. Password expiry (`chage -M`) forces a password reset after N days but doesn't disable the account. For contractor/temp accounts, always use account expiry, not just password expiry. Password expiry alone means the contractor can reset their password and continue accessing the system indefinitely.
+
+---
+
+**Q6: In Ansible, how would you enforce account expiry at scale across 50 servers?**
+
+```yaml
+- name: Create temporary user with expiry
+  hosts: all
+  tasks:
+    - name: Create user anita with expiry
+      ansible.builtin.user:
+        name: anita
+        expires: 1801238400   # Unix timestamp for 2027-01-28
+        state: present
+```
+
+> Ansible's `user` module takes `expires` as a Unix timestamp. Convert with `date -d "2027-01-28" +%s`. Idempotent — run it 100 times, same result. This is how you enforce account lifecycle at fleet scale.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

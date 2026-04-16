@@ -227,4 +227,86 @@ git --git-dir=/opt/official.git branch -a
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: What's the difference between `git init` and `git init --bare`? When do you use each?**
+
+| Command | Use case | Working tree |
+|---------|---------|-------------|
+| `git init` | Local development repo | Yes — files checked out |
+| `git init --bare` | Central/server repo | No — only Git database |
+
+> You can't push to a non-bare repo that has the branch checked out — Git refuses to update a branch that's currently checked out to avoid overwriting uncommitted work. Bare repos have no checked-out branch, so they accept pushes freely. Always use `--bare` for repos that teams push to.
+
+---
+
+**Q2: Someone tries to `git commit` directly inside a bare repository and gets an error. Why?**
+
+```bash
+cd /opt/official.git
+git commit -m "test"
+# fatal: this operation must be run in a work tree
+
+# Why: a bare repo has no working tree — there are no files to stage or commit
+# Bare repos only accept: git push (from external clones)
+```
+
+> A bare repo is a storage target, not a workspace. You work in clones, then push to the bare repo. Committing directly inside a bare repo is architecturally wrong — it's like writing directly to the "server's" `.git/` folder.
+
+---
+
+**Q3: How do you set up access control on a bare Git repository for a team?**
+
+```bash
+# Method 1: Unix group permissions
+sudo groupadd gitteam
+sudo usermod -aG gitteam alice
+sudo usermod -aG gitteam bob
+sudo chown -R :gitteam /opt/official.git
+sudo chmod -R g+rwX /opt/official.git
+sudo git config --file /opt/official.git/config core.sharedRepository group
+
+# Method 2: Use Gitea/GitLab CE (recommended for teams)
+# Self-hosted Git platform handles auth, permissions, and UI
+```
+
+> For small teams on a single server, Unix group permissions with `core.sharedRepository` work well. For anything larger, use a Git platform (Gitea, GitLab CE) — they provide per-user auth, SSH key management, branch protection, and audit logs.
+
+---
+
+**Q4: What are server-side hooks in a bare repository and why are they useful in production?**
+
+```bash
+# Hooks live in /opt/official.git/hooks/
+ls /opt/official.git/hooks/
+# pre-receive   → runs before refs are updated (push validation)
+# post-receive  → runs after push completes (deployment trigger)
+# update        → runs per-branch during push
+
+# Example: auto-deploy on push to master
+cat /opt/official.git/hooks/post-receive
+#!/bin/bash
+while read oldrev newrev refname; do
+  if [ "$refname" = "refs/heads/master" ]; then
+    git --work-tree=/var/www/html --git-dir=/opt/official.git checkout -f master
+  fi
+done
+```
+
+> `post-receive` hooks are how many small teams implement simple "git push to deploy" workflows. Every push to master automatically deploys to the web server. This is the simplest form of continuous deployment.
+
+---
+
+**Q5: How does a bare repository on a storage server compare to GitHub/GitLab as a central repo?**
+
+> Functionally identical — GitHub and GitLab store your repositories as bare repos on their servers. When you `git clone https://github.com/user/repo.git`, you're cloning a bare repository. The `.git` URL suffix is the convention for bare repos.
+>
+> The difference: GitHub/GitLab add authentication, web UI, pull requests, CI/CD integration, and access controls on top of the bare repo storage. A bare repo on `ststor01` is the raw mechanism without any of those features.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

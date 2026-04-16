@@ -280,4 +280,93 @@ These additions — timestamps, `set -e`, logging, and error handling — are wh
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: The backup script runs fine manually but fails when triggered by cron with "Permission denied on SCP". What's wrong?**
+
+```bash
+# Diagnose: is the SSH key available to cron's environment?
+sudo crontab -u tony -l
+
+# Test the exact command as the cron user would run it
+sudo su - tony -c 'scp /backup/test.zip natasha@ststor01:/backup/'
+
+# Check SSH agent — cron doesn't have one
+# Solution: specify the key explicitly in scp
+scp -i /home/tony/.ssh/id_rsa /backup/test.zip natasha@ststor01:/backup/
+
+# Or set up StrictHostKeyChecking=no in ~/.ssh/config
+Host ststor01
+    IdentityFile ~/.ssh/id_rsa
+    StrictHostKeyChecking no
+```
+
+> Cron doesn't inherit the user's SSH agent or environment. Always use `-i /path/to/key` in SCP/SSH commands inside cron jobs, or configure `~/.ssh/config` with explicit key paths.
+
+---
+
+**Q2: Why shouldn't you use `sudo` inside a backup script, and how do you handle it properly?**
+
+> `sudo` inside scripts requires either: a TTY (not available in cron), or `NOPASSWD` in sudoers (security risk). The correct approach is to set proper ownership on directories before scripting:
+>
+> ```bash
+> sudo chown tony:tony /backup /scripts
+> ```
+>
+> Now `tony` can write to both without escalation. The script never needs `sudo`. Least privilege: the script does only what tony's account is already authorized to do — no elevation needed.
+
+---
+
+**Q3: The backup archive on `ststor01` is 0 bytes. How do you debug the SCP step?**
+
+```bash
+# Test SCP in verbose mode to see what's happening
+scp -v /backup/xfusioncorp_news.zip natasha@ststor01:/backup/
+
+# Check write permissions on the remote directory
+ssh natasha@ststor01 "ls -la /backup/"
+
+# Check disk space on remote
+ssh natasha@ststor01 "df -h /backup/"
+
+# Check if zip actually created a non-empty archive
+ls -lh /backup/xfusioncorp_news.zip
+# If 0 bytes — the zip command failed silently
+```
+
+> A 0-byte archive usually means the `zip` command failed (source directory didn't exist, permissions issue) but the script continued because there was no error handling. Add `set -e` at the top of scripts to exit on any error.
+
+---
+
+**Q4: How would you add timestamped backups so the archive doesn't overwrite itself daily?**
+
+```bash
+#!/bin/bash
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+ARCHIVE_NAME="xfusioncorp_news_${TIMESTAMP}.zip"
+LOCAL_BACKUP="/backup"
+
+zip -r "${LOCAL_BACKUP}/${ARCHIVE_NAME}" /var/www/html/news
+scp "${LOCAL_BACKUP}/${ARCHIVE_NAME}" natasha@ststor01:/backup/
+
+# Cleanup: keep only last 7 days locally
+find /backup -name "xfusioncorp_news_*.zip" -mtime +7 -delete
+```
+
+> Timestamped archives are the standard in production. They allow point-in-time recovery and prevent overwrite accidents. The `find` cleanup prevents disk exhaustion.
+
+---
+
+**Q5: What's the 3-2-1 backup rule and how does this task implement it?**
+
+> 3-2-1 means: **3 copies** of data, on **2 different storage media**, with **1 copy offsite**.
+>
+> This task implements: local archive on `stapp01` (copy 1) + remote copy on `ststor01` (copy 2). It partially satisfies the rule — two copies on two separate servers. For full 3-2-1 compliance, a third copy would go to offsite storage (cloud object storage like S3, a different datacenter, or tape).
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

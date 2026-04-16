@@ -225,4 +225,95 @@ The new commit is a **mirror image** of the reverted commit — it contains exac
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: A bad commit was merged to `main` in production. The on-call engineer wants to do `git reset --hard` on `main` to "remove" it. Why is this catastrophically wrong?**
+
+> `git reset --hard` on a pushed shared branch rewrites history. When the engineer force-pushes, everyone who has cloned or pulled `main` now has a different history from the remote. Their next `git pull` will fail or create unexpected merge commits. In the worst case, developers will re-introduce the bad commit because their local clone still has it.
+>
+> **Correct approach: `git revert`**. It creates a new commit that undoes the bad changes — history is preserved, push works normally, no team disruption.
+
+---
+
+**Q2: How do you revert a specific commit that isn't HEAD but is several commits back in history?**
+
+```bash
+# View history to find the commit hash
+git log --oneline
+# abc1234 bad deploy config
+# def5678 add feature X
+# ghi9012 update dependencies
+# ...
+
+# Revert the specific commit (not HEAD)
+git revert abc1234
+
+# This creates a new commit that inverts abc1234's changes
+# def5678, ghi9012, and others remain untouched
+```
+
+> `git revert <hash>` works on any commit in history, not just HEAD. If the revert has conflicts (because later commits touched the same code), you'll need to resolve them manually.
+
+---
+
+**Q3: What's `git revert --no-commit` used for, and why is it preferred for controlling commit messages?**
+
+```bash
+# Without --no-commit: opens editor with auto-generated message like:
+# "Revert 'bad commit message'"
+
+# With --no-commit: stages the inverse changes but doesn't commit
+git revert --no-commit HEAD
+
+# Now you control the commit message exactly
+git commit -m "revert games"   # exact message as required by the task
+
+# Or add more staged changes before committing
+git add other-fix.txt
+git commit -m "revert games and fix related issue"
+```
+
+> `--no-commit` gives you full control over the commit message AND lets you bundle additional staged changes into the revert commit. Essential when the task (or your team's commit convention) requires a specific message format.
+
+---
+
+**Q4: Can you revert a merge commit? How does it differ from reverting a regular commit?**
+
+```bash
+# Reverting a merge commit requires specifying which parent to keep
+git log --oneline --graph
+# *   abc1234 Merge feature/login into main
+# |\
+# | * def5678 Add login feature
+# * | ghi9012 Update README
+
+# -m 1 = keep parent 1 (main branch side)
+git revert -m 1 abc1234
+
+# This creates a commit that undoes everything the merge brought in
+# The merge commit itself stays in history
+```
+
+> `-m` (mainline) specifies which parent to treat as the "main" branch. `-m 1` is almost always what you want — it reverts "what the merge added" relative to the main branch.
+
+---
+
+**Q5: After reverting a commit, the same bug reappears after a subsequent merge. Why?**
+
+> This is the "re-merging a reverted merge" problem. When you `git revert` a merge commit, the revert itself is a commit on `main`. If you later try to re-merge the fixed feature branch, Git sees the feature's commits as "already in main history" (because the merge commit is still there) and may not re-apply them.
+>
+> The solution: revert the revert commit before re-merging the fixed branch:
+> ```bash
+> git revert <hash-of-the-revert-commit>  # undo the undo
+> # Then re-merge the fixed feature branch
+> git merge feature/fixed-login
+> ```
+> This is a known Git footgun — documented in the Git project itself.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

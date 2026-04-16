@@ -251,4 +251,75 @@ mysqladmin -u root status                       # Service health summary
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: MariaDB failed to start after a server reboot that was fine before. What's the first place you look?**
+
+```bash
+# Always start here
+sudo systemctl status mariadb
+
+# Then dive into logs
+sudo journalctl -u mariadb -n 50 --no-pager
+
+# Then MariaDB's own log
+sudo cat /var/log/mariadb/mariadb.log
+```
+
+> Post-reboot failures are almost always: stale socket files, wrong ownership on `/run/` directories (rebuilt fresh from tmpfs on boot), or disk space issues. The `/run/` directory is a tmpfs — it's recreated empty on every boot from `tmpfiles.d` rules. If those rules are wrong, ownership is wrong.
+
+---
+
+**Q2: What's the difference between `journalctl -u mariadb` and `/var/log/mariadb/mariadb.log`? Why are both needed?**
+
+> `journalctl` captures **systemd-layer events**: service state changes, pre-flight checks, wrapper script output. Once the service process (`mysqld`) is actually running, application errors go to its own log file.
+>
+> Think of it as two distinct layers:
+> - `journalctl` = "the init system's view" — did the service start/stop? What did the pre-flight scripts say?
+> - `mariadb.log` = "MariaDB's own view" — what happened inside the database engine?
+>
+> A socket check failure shows in `journalctl`. A PID file permission denial shows only in `mariadb.log`. You need both for complete diagnosis.
+
+---
+
+**Q3: The service says `active (running)` in systemctl but the application can't connect to the database. What do you check?**
+
+```bash
+# Is MariaDB actually accepting connections?
+mysql -u root -e "SELECT 1;"
+
+# What port/socket is it listening on?
+sudo ss -tlnp | grep mysql
+sudo ls -la /var/lib/mysql/mysql.sock
+
+# Are there connection errors in the log?
+sudo tail -50 /var/log/mariadb/mariadb.log | grep -i "error\|warning"
+
+# Check max connections
+mysql -u root -e "SHOW STATUS LIKE 'Threads_connected';"
+mysql -u root -e "SHOW VARIABLES LIKE 'max_connections';"
+```
+
+> `systemctl active` just means the process is running — not that it's healthy. The database could be in a recovery loop, refusing connections due to max_connections being hit, or listening on the wrong socket.
+
+---
+
+**Q4: What's a stale socket file and why does it prevent MariaDB from starting?**
+
+> When MariaDB starts, it creates a socket file at `/var/lib/mysql/mysql.sock` that client connections use. When it shuts down cleanly, it removes the file. If the process crashes or is killed hard, the socket file remains but nothing is using it — it's "stale."
+>
+> The MariaDB startup pre-flight check detects the stale socket and refuses to start: "Socket file exists. No process is using it → garbage file → abort." Fix: `sudo rm -f /var/lib/mysql/mysql.sock` then restart.
+
+---
+
+**Q5: After fixing and starting MariaDB, you forget `systemctl enable mariadb`. What happens at the next reboot?**
+
+> The service stays stopped after reboot. The exact same incident reopens. `start` = runs now. `enable` = runs at every future boot. In a post-incident runbook, always include `systemctl enable` as a required step — not optional. A service that survives one reboot but fails the next is not actually fixed.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

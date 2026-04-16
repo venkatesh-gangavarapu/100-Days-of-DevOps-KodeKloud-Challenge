@@ -200,4 +200,97 @@ git clone --mirror /opt/beta.git /dest         # Full mirror of bare repo
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: `git clone` succeeds but gives "warning: You appear to have cloned an empty repository." Is something wrong?**
+
+> No — this is expected and correct. An empty repository has no commits yet. The clone succeeded and is properly configured with `origin` pointing back to the source. The warning just informs you there's no content to check out.
+>
+> Verify the clone is correctly linked:
+> ```bash
+> git remote -v
+> # origin  /opt/beta.git (fetch)
+> # origin  /opt/beta.git (push)
+> ```
+> The clone is ready to receive the first push.
+
+---
+
+**Q2: What's the difference between cloning a repo locally vs over SSH?**
+
+```bash
+# Local path clone (same server)
+git clone /opt/beta.git /usr/src/kodekloudrepos/beta
+
+# SSH clone (remote server)
+git clone natasha@ststor01:/opt/beta.git ~/local-copy
+
+# HTTPS clone (web platform)
+git clone https://github.com/user/repo.git
+```
+
+> The protocol changes but the clone operation is identical — full history, all branches, remote `origin` configured. Local path clones are the fastest (no network overhead). SSH clones use key-based auth. HTTPS uses username/token. For automation between servers, SSH with key-based auth is the standard.
+
+---
+
+**Q3: How do you clone only the latest commit instead of the full history (shallow clone)?**
+
+```bash
+# Shallow clone — only the most recent commit
+git clone --depth 1 /opt/beta.git /dest
+
+# Shallow clone of a specific branch
+git clone --depth 1 --branch main /opt/beta.git /dest
+```
+
+> Shallow clones are used in CI/CD pipelines where full history isn't needed — they're dramatically faster for large repos. GitHub Actions does a shallow clone (`fetch-depth: 1`) by default. The tradeoff: you can't run `git log` to see history, and some git operations (like `git blame`) may be incomplete.
+
+---
+
+**Q4: After cloning, how do you confirm the clone is properly linked to the source repo?**
+
+```bash
+cd /usr/src/kodekloudrepos/beta
+
+# Check remote configuration
+git remote -v
+# origin  /opt/beta.git (fetch)
+# origin  /opt/beta.git (push)
+
+# Check that HEAD matches the source
+git log --oneline -5
+
+# Verify the working tree is clean
+git status
+# On branch main
+# nothing to commit, working tree clean
+```
+
+> Always verify `git remote -v` after cloning. The `origin` remote is your connection back to the source — it's what `git pull` and `git push` use by default. If it's wrong, pushes go to the wrong place.
+
+---
+
+**Q5: In a CI/CD pipeline, why is cloning to a specific path important and how do you handle workspace cleanup?**
+
+```bash
+# Jenkins-style: clone to a known path
+git clone /opt/beta.git /workspace/beta-build-${BUILD_NUMBER}
+
+# GitHub Actions: automatic workspace management
+- uses: actions/checkout@v4
+  with:
+    path: app   # relative to $GITHUB_WORKSPACE
+
+# Cleanup after build
+rm -rf /workspace/beta-build-${BUILD_NUMBER}
+```
+
+> In CI/CD, cloning to a specific path ensures builds are isolated — parallel builds don't overwrite each other. Cleanup after builds prevents disk exhaustion on build servers. Many CI tools (Jenkins, GitLab Runner) handle workspace management automatically, but understanding the underlying clone mechanics helps when debugging pipeline issues.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

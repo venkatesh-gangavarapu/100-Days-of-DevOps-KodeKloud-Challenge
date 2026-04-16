@@ -282,4 +282,104 @@ mysql -u kodekloud_tim -pYchZHRcLkL -e "SHOW DATABASES;"
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: An application connects to MariaDB from another server but gets "Access denied for user". The user exists and the password is correct. What's wrong?**
+
+```sql
+-- Check what hosts the user is allowed from
+SELECT User, Host FROM mysql.user WHERE User='kodekloud_tim';
+-- If it shows: kodekloud_tim | localhost
+-- But app connects from stapp01 → denied!
+
+-- Fix: grant access from the correct host
+GRANT ALL PRIVILEGES ON kodekloud_db8.* TO 'kodekloud_tim'@'stapp01' IDENTIFIED BY 'YchZHRcLkL';
+-- Or use wildcard:
+GRANT ALL PRIVILEGES ON kodekloud_db8.* TO 'kodekloud_tim'@'%' IDENTIFIED BY 'YchZHRcLkL';
+FLUSH PRIVILEGES;
+```
+
+> In MariaDB/MySQL, `'user'@'localhost'` and `'user'@'%'` are completely separate user accounts. This is the #1 "access denied" mystery — the user exists for localhost but not for remote connections.
+
+---
+
+**Q2: What's the minimal set of privileges for an application database user in production?**
+
+```sql
+-- Instead of ALL PRIVILEGES, grant only what the app needs:
+GRANT SELECT, INSERT, UPDATE, DELETE ON kodekloud_db8.* TO 'appuser'@'%';
+
+-- For read-only reporting user:
+GRANT SELECT ON kodekloud_db8.* TO 'readonly'@'%';
+
+-- For a migration user (needs DDL):
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP ON kodekloud_db8.* TO 'migrate'@'localhost';
+```
+
+> Least privilege: grant exactly what the application needs. An app user rarely needs CREATE, DROP, or ALTER — those are migration privileges. A compromised app user with minimal grants can read/write data but can't drop tables or access other databases.
+
+---
+
+**Q3: How do you verify that a user has the exact privileges you expect — not more, not less?**
+
+```sql
+-- Show all grants for the user
+SHOW GRANTS FOR 'kodekloud_tim'@'%';
+
+-- Expected:
+-- GRANT ALL PRIVILEGES ON `kodekloud_db8`.* TO 'kodekloud_tim'@'%'
+
+-- Check from non-root — what databases does the user see?
+mysql -u kodekloud_tim -pYchZHRcLkL -e "SHOW DATABASES;"
+```
+
+> `SHOW GRANTS` is the authoritative source. The output shows exactly what privilege string is stored — no guessing. Run it after every `GRANT` to confirm.
+
+---
+
+**Q4: MariaDB is freshly installed and you connect as root without a password. Is this a security problem?**
+
+> Yes — passwordless root is the default on fresh MariaDB installs on RHEL/CentOS (using socket authentication). It's only safe because root requires `sudo` to access it. But you should still secure it:
+>
+> ```bash
+> sudo mysql_secure_installation
+> ```
+>
+> This guided script: sets a root password, removes anonymous users, disables remote root login, removes the test database. Run it after every fresh MariaDB install in production before deploying any applications.
+
+---
+
+**Q5: In Terraform/infrastructure-as-code, how would you provision this MariaDB user automatically?**
+
+```hcl
+# For AWS RDS MariaDB:
+resource "aws_db_instance" "main" {
+  engine         = "mariadb"
+  engine_version = "10.6"
+  username       = "admin"
+  password       = var.db_password
+  db_name        = "kodekloud_db8"
+}
+
+# Then use a null_resource + provisioner to create the app user:
+resource "null_resource" "db_user" {
+  provisioner "local-exec" {
+    command = <<-EOF
+      mysql -h ${aws_db_instance.main.endpoint} -u admin -p${var.db_password} \
+        -e "CREATE USER 'kodekloud_tim'@'%' IDENTIFIED BY '${var.app_db_password}'; \
+            GRANT ALL ON kodekloud_db8.* TO 'kodekloud_tim'@'%'; \
+            FLUSH PRIVILEGES;"
+    EOF
+  }
+}
+```
+
+> In modern infrastructure, database users are provisioned as code alongside the infrastructure. Passwords come from Vault or AWS Secrets Manager — never hardcoded in Terraform files.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

@@ -239,4 +239,84 @@ echo hello > /tmp/cron_text && cat /tmp/cron_text
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: A cron job is not running even though `crond` is active and the crontab entry looks correct. How do you debug it?**
+
+```bash
+# Step 1: Confirm crond is actually running
+systemctl is-active crond
+
+# Step 2: Check cron execution logs
+sudo tail -50 /var/log/cron
+# Look for: (root) CMD (echo hello > /tmp/cron_text)
+
+# Step 3: Test the command manually as the cron user
+sudo su - root -c 'echo hello > /tmp/cron_text'
+
+# Step 4: Check environment — cron has a minimal PATH
+# Commands that work in your shell may fail in cron
+# Solution: use full paths in cron jobs
+# BAD:  */5 * * * * python backup.py
+# GOOD: */5 * * * * /usr/bin/python3 /opt/scripts/backup.py
+```
+
+> 80% of cron debugging comes down to: PATH differences, no shell expansion, no TTY, and permissions. Always use absolute paths in cron jobs.
+
+---
+
+**Q2: What's the difference between `systemctl start crond` and `systemctl enable crond`? What happens if you only run `start`?**
+
+> `start` launches the service right now in the current session. `enable` configures it to start automatically at every future boot. If you only run `start`, the service works until the next reboot — then it's gone. Always run both in sequence: `start` then `enable`, or use `systemctl enable --now crond` to do both in one command.
+
+---
+
+**Q3: A cron job runs fine manually but fails silently when executed by cron. What are the most common causes?**
+
+> 1. **Missing PATH** — cron starts with `/usr/bin:/bin`. If your command is in `/usr/local/bin` or `/sbin`, use the full path.
+> 2. **No HOME** — scripts that reference `~` or `$HOME` fail. Use absolute paths.
+> 3. **No display/TTY** — scripts using interactive tools (editors, `sudo` requiring password) fail. Design scripts for non-interactive execution.
+> 4. **Output discarded** — cron discards stdout/stderr unless you redirect or configure a `MAILTO`. Add `2>&1 >> /var/log/myjob.log` to capture errors.
+> 5. **User environment not loaded** — `.bashrc` and `.bash_profile` are not sourced in cron. Set all required env vars explicitly in the crontab or script.
+
+---
+
+**Q4: How do you add a cron job non-interactively from a script or Ansible?**
+
+```bash
+# One-liner to add without replacing existing jobs
+(crontab -u root -l 2>/dev/null; echo "*/5 * * * * echo hello > /tmp/cron_text") | crontab -u root -
+
+# Ansible approach (idempotent)
+- name: Add cron job
+  ansible.builtin.cron:
+    name: "echo hello every 5 min"
+    minute: "*/5"
+    job: "echo hello > /tmp/cron_text"
+    user: root
+    state: present
+```
+
+> The Ansible `cron` module is the cleanest approach — it's idempotent (won't duplicate on re-run) and uses the `name` field as a unique identifier. The bash one-liner works for ad-hoc use but can create duplicates if run multiple times.
+
+---
+
+**Q5: What's the `@reboot` cron directive and when would you use it in production?**
+
+```bash
+# Runs the command once at system startup
+@reboot /opt/scripts/startup_check.sh
+
+# Equivalent to:
+# Nothing (no cron equivalent — @reboot is unique to cron)
+```
+
+> `@reboot` is used for: clearing stale lock files on boot, starting processes that systemd doesn't manage, running post-boot validation scripts, or triggering one-time setup tasks on first boot. It's simpler than writing a systemd service for short-lived startup tasks.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

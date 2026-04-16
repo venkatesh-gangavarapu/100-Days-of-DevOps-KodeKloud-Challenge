@@ -326,4 +326,92 @@ server {
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: `curl http://stlb01:80` returns `502 Bad Gateway`. How do you diagnose this?**
+
+```bash
+# 502 = nginx reached the backend but got a bad response (or no response)
+# Check: are backends actually running?
+for host in stapp01 stapp02 stapp03; do
+  echo -n "$host: "
+  ssh $host "sudo systemctl is-active httpd"
+done
+
+# Check nginx error log for details
+sudo tail -30 /var/log/nginx/error.log
+# Common: "connect() failed (111: Connection refused) while connecting to upstream"
+
+# Verify upstream IPs/ports resolve correctly
+sudo nginx -T | grep upstream
+# Confirms what nginx thinks the backends are
+
+# Test direct connection to a backend from the LBR
+curl http://stapp01:PORT
+```
+
+> 502 almost always means: backend is down, wrong port in upstream config, or a firewall between LBR and backend. Check backends first.
+
+---
+
+**Q2: How does nginx's round-robin load balancing work, and when would you switch to `least_conn`?**
+
+> Round-robin (default) cycles through backends sequentially: request 1 → stapp01, request 2 → stapp02, request 3 → stapp03, request 4 → stapp01, etc. Each server gets an equal share of requests.
+>
+> Use `least_conn` when requests have varying processing times. If stapp01 is handling a slow 10-second database query and stapp02 is idle, round-robin will keep sending more requests to stapp01. `least_conn` routes to the server with the fewest active connections — automatically avoids overloading slow servers.
+>
+> ```nginx
+> upstream nautilus_app {
+>     least_conn;
+>     server stapp01:PORT;
+>     server stapp02:PORT;
+>     server stapp03:PORT;
+> }
+> ```
+
+---
+
+**Q3: How do you mark a backend server as temporarily unavailable in nginx during maintenance?**
+
+```nginx
+upstream nautilus_app {
+    server stapp01:PORT;
+    server stapp02:PORT down;    # Temporarily removed from rotation
+    server stapp03:PORT;
+    server stapp04:PORT backup;  # Only used if all others fail
+}
+```
+
+> The `down` parameter immediately removes a server from rotation without restarting nginx. `backup` keeps a server as a hot standby — it only receives traffic if all primary servers are down. Reload (not restart) to apply: `sudo nginx -s reload`.
+
+---
+
+**Q4: What's the difference between `proxy_pass http://nautilus_app` and `proxy_pass http://stapp01:PORT`?**
+
+> `proxy_pass http://stapp01:PORT` — hardcoded to a single backend. No load balancing, no failover. If stapp01 goes down, 100% of traffic fails.
+>
+> `proxy_pass http://nautilus_app` — uses the upstream pool. nginx handles load balancing, health checks, and failover across all servers in the pool. This is always the correct pattern for production HA setups.
+
+---
+
+**Q5: How do you implement active health checks in nginx so it stops sending traffic to a failed backend automatically?**
+
+```nginx
+upstream nautilus_app {
+    server stapp01:PORT max_fails=3 fail_timeout=30s;
+    server stapp02:PORT max_fails=3 fail_timeout=30s;
+    server stapp03:PORT max_fails=3 fail_timeout=30s;
+}
+```
+
+> `max_fails=3` — mark a server as unavailable after 3 consecutive failures. `fail_timeout=30s` — keep it marked as unavailable for 30 seconds, then try again.
+>
+> For active health checks (probing backends even without real traffic), you need **nginx Plus** (commercial) or the `ngx_http_healthcheck_module`. Open-source nginx only does passive health checking (based on real request failures).
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

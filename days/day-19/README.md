@@ -274,4 +274,100 @@ No special Alias or Location directives needed — Apache's `DocumentRoot` handl
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: Files were copied to `/var/www/html/blog/` with correct permissions, but Apache returns 403 Forbidden. What's the SELinux issue?**
+
+```bash
+# Check the SELinux context on the files
+ls -Z /var/www/html/blog/
+# system_u:object_r:tmp_t:s0  index.html  ← wrong! Should be httpd_sys_content_t
+
+# Files copied from /tmp/ keep the tmp_t label
+# Fix: restore correct context
+sudo restorecon -Rv /var/www/html/
+
+# Verify
+ls -Z /var/www/html/blog/
+# system_u:object_r:httpd_sys_content_t:s0  index.html  ✅
+
+# Also check the error log for confirmation:
+sudo tail -20 /var/log/httpd/error_log
+# AVC denied: httpd read tmp_t → confirms SELinux was the cause
+```
+
+> This is the single most common cause of "403 after copying files" on RHEL/CentOS. Always run `restorecon -Rv` after copying web content from any non-standard source location.
+
+---
+
+**Q2: You changed Apache to listen on port 5002 and it starts fine, but `curl http://localhost:5002/blog/` still refuses. What else needs changing?**
+
+```bash
+# Check if port 5002 is actually bound
+sudo ss -tlnp | grep 5002
+
+# If not bound — check SELinux port context
+sudo semanage port -l | grep http_port_t
+# If 5002 is missing:
+sudo semanage port -a -t http_port_t -p tcp 5002
+
+# Restart Apache after adding port context
+sudo systemctl restart httpd
+
+# Verify binding
+sudo ss -tlnp | grep 5002
+```
+
+> Apache will silently fail to bind to a non-standard port if SELinux doesn't have it in `http_port_t`. The service may appear to start (if other ports are fine) but won't bind to 5002. Always check `semanage port -l | grep http_port_t` after any port change.
+
+---
+
+**Q3: How does Apache automatically route `/blog/` requests to the `/var/www/html/blog/` directory without any Alias directive?**
+
+> Apache's `DocumentRoot` directive defines the filesystem root for all URL paths. When Apache receives `GET /blog/index.html`:
+>
+> ```
+> URL path: /blog/index.html
+> DocumentRoot: /var/www/html
+> Mapped to: /var/www/html/blog/index.html
+> ```
+>
+> Path concatenation: DocumentRoot + URL path = filesystem path. No special config needed for subdirectories — they're served automatically as long as they're inside the DocumentRoot with correct permissions and SELinux labels.
+
+---
+
+**Q4: What ownership should web files have — `root:root` or `apache:apache`?**
+
+> For files Apache needs to **read** (static HTML, CSS, images): `root:root` with `644` permissions is fine — Apache can read world-readable files.
+>
+> For files Apache needs to **write** (uploads, cache): `apache:apache` with `755` is required — Apache's process runs as the `apache` user and needs write access.
+>
+> `chown -R apache:apache` is the safe default for all web content — it's more permissive than necessary for read-only files but ensures no permission issues.
+
+---
+
+**Q5: How would you host 5 websites on a single Apache server using virtual hosts instead of path-based hosting?**
+
+```apache
+# /etc/httpd/conf.d/sites.conf
+
+<VirtualHost *:80>
+    ServerName blog.example.com
+    DocumentRoot /var/www/blog
+</VirtualHost>
+
+<VirtualHost *:80>
+    ServerName apps.example.com
+    DocumentRoot /var/www/apps
+</VirtualHost>
+```
+
+> Virtual hosting routes requests based on the `Host` header — different domains go to different document roots. Path-based hosting (this task) serves multiple sites under one domain via URL paths. Virtual hosting is more common for distinct applications; path-based is simpler when all content is on the same domain.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

@@ -259,4 +259,111 @@ You can directly edit `.git/config` to add, rename, or update remotes — it's p
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: When would you have multiple Git remotes in a real project?**
+
+> The most common real-world scenarios:
+>
+> 1. **Fork + upstream**: `origin` = your fork, `upstream` = original project
+> 2. **Multi-environment deploy**: `origin` = main repo, `staging` = staging server, `prod` = production server
+> 3. **Mirror/backup**: `origin` = GitHub, `backup` = self-hosted GitLab
+> 4. **Organization + personal**: contributing to a team project from your fork
+>
+> Multiple remotes let you push the same code to different destinations with explicit control over where each push goes.
+
+---
+
+**Q2: How do you push the same branch to multiple remotes simultaneously?**
+
+```bash
+# Option 1: Push explicitly to each remote
+git push origin master
+git push dev_news master
+
+# Option 2: Configure a push URL alias (pushes to both on git push)
+git remote set-url --add origin /opt/xfusioncorp_news.git
+
+# Now git push origin master pushes to BOTH URLs
+git remote -v
+# origin  /opt/news.git (fetch)
+# origin  /opt/news.git (push)
+# origin  /opt/xfusioncorp_news.git (push)  ← second push target
+```
+
+> The `--add` flag lets you push to multiple remotes with a single `git push origin`. Useful for maintaining mirrors — one push updates both the primary and backup repo.
+
+---
+
+**Q3: A remote was added with the wrong URL. How do you update it without removing and re-adding?**
+
+```bash
+# Check current URL
+git remote -v
+
+# Update the URL
+git remote set-url dev_news /opt/correct_path.git
+
+# Or for SSH:
+git remote set-url dev_news git@ststor01:/opt/xfusioncorp_news.git
+
+# Verify
+git remote -v
+```
+
+> `git remote set-url` is cleaner than remove + re-add because it preserves any tracking branch configurations. It's also scriptable for bulk remote URL updates across multiple repos.
+
+---
+
+**Q4: What does `git fetch dev_news` do vs `git pull dev_news master`?**
+
+```bash
+# git fetch — downloads objects but doesn't merge
+git fetch dev_news
+# Creates: remotes/dev_news/master tracking branch
+# Your local master is UNCHANGED
+
+# Inspect what's there
+git log --oneline dev_news/master
+
+# git pull — fetch + merge (can create unexpected merge commits)
+git pull dev_news master
+# Downloads AND merges into current branch
+
+# Best practice: fetch first, inspect, then merge
+git fetch dev_news
+git diff master dev_news/master
+git merge dev_news/master
+```
+
+> `git fetch` is always safe — it downloads updates without touching your working tree. `git pull` = `fetch` + `merge`, which can create surprise merge commits. When in doubt, fetch first.
+
+---
+
+**Q5: How do you view what remotes a repository has and what their exact URLs are?**
+
+```bash
+# List remotes with URLs
+git remote -v
+
+# More detail: full remote config
+git remote show dev_news
+# Shows: URL, tracked branch, local branch tracking, up-to-date status
+
+# View .git/config directly (raw)
+cat .git/config
+# [remote "origin"]
+#     url = /opt/news.git
+# [remote "dev_news"]
+#     url = /opt/xfusioncorp_news.git
+```
+
+> `.git/config` is the authoritative source — `git remote` commands are just conveniences for editing this file. Reading it directly is useful for scripting and troubleshooting remote configuration.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

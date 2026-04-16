@@ -291,4 +291,117 @@ For this task, option 3 is correct — all 4 stories need to be in the index.
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: You resolved a merge conflict, staged the file, and ran `git commit`. Git opened an editor with a pre-filled message saying "Merge branch 'master' of origin". Should you change it?**
+
+> That auto-generated message is perfectly correct for a merge commit — leave it as-is or enrich it slightly. The format `Merge branch 'X' of Y` is standard and readable in `git log --graph`. It tells the story accurately: you merged remote changes into your local branch.
+>
+> Only change the message if your team has a convention (e.g., referencing a ticket: `Merge branch 'master' — resolves conflict from JIRA-123`). Changing it to something vague like `fix conflict` is worse than the auto-generated version.
+>
+> The important thing is that the commit is clean — no conflict markers in any files. The message is secondary.
+
+---
+
+**Q2: After resolving a conflict and pushing, a teammate says their `git pull` now shows the conflict commit in their history and it looks messy. How do you prevent this in the future?**
+
+```bash
+# The "messy" history comes from git pull = git fetch + git merge
+# This creates a merge commit every time you pull with local changes
+
+# Option 1: Always rebase when pulling (preferred by many teams)
+git pull --rebase origin master
+# Replays your local commits on top of remote, no merge commit
+
+# Set this as default behavior:
+git config --global pull.rebase true
+# Now git pull always uses rebase instead of merge
+
+# Option 2: Use fetch + rebase manually (more control)
+git fetch origin
+git rebase origin/master
+
+# Option 3: Team agreement — pull before pushing, never push to a branch
+# others are actively committing to without coordination
+```
+
+> The merge commit from conflict resolution IS a legitimate part of history — it records that two divergent lines of development were reconciled. However, if team members constantly see noisy "merge branch 'master' into master" commits in the log, switching to `pull --rebase` cleans this up significantly. Many teams configure `pull.rebase=true` as a standard repo setting.
+
+---
+
+**Q3: You staged and committed a conflict resolution but forgot to check for remaining conflict markers. The code now has `<<<<<<<` in a source file in production. How do you find and fix this fast?**
+
+```bash
+# Search for conflict markers across the entire repository
+grep -r "<<<<<<\|=======\|>>>>>>>" --include="*.py" --include="*.js" --include="*.yaml" .
+# Or search all text files:
+grep -rn "^<<<<<<< \|^=======\|^>>>>>>> " .
+
+# If found — fix immediately:
+vi affected-file.py   # Remove markers, keep correct content
+git add affected-file.py
+git commit -m "Fix: remove leftover conflict markers from merge"
+git push origin master
+
+# Prevention: Add a pre-commit hook that rejects conflict markers
+# .git/hooks/pre-commit:
+#!/bin/bash
+if git diff --cached | grep -E "^[+](<{7}|={7}|>{7})"; then
+  echo "ERROR: Conflict markers detected in staged changes"
+  exit 1
+fi
+```
+
+> Leftover conflict markers in committed code are embarrassing but happen. The pre-commit hook is the best prevention — it catches markers before they ever commit. Many linters also catch these as syntax errors for specific file types. A `grep -r "<<<<<<<"` sweep before any production deploy is a cheap safety net worth adding to CI pipelines.
+
+---
+
+**Q4: Sarah pushed first and her changes are on `origin/master`. Max didn't pull before working. Is this a process failure or a normal occurrence?**
+
+> This is completely normal and expected in any active team. It's not a failure — it's Git doing exactly what it was designed for: enabling multiple people to work simultaneously. The conflict is resolved in minutes and both changes are preserved.
+>
+> A process failure would be:
+> - Not pulling before starting a large change to a file you know others are editing
+> - Not communicating when multiple people are about to modify the same critical file
+> - Force pushing to resolve a conflict (which would destroy one person's work)
+>
+> Best practice teams follow:
+> 1. `git pull --rebase` before starting a new work session
+> 2. Keep PRs short-lived (< 2 days) to minimize divergence
+> 3. For files that frequently conflict (config files, changelogs), designate an owner or use a different tool (e.g., structured YAML that merge tools understand)
+
+---
+
+**Q5: How do you use `git diff` and `git log` to understand what happened before touching a conflict?**
+
+```bash
+# See the full state before pulling (your local commits)
+git log --oneline
+
+# See what's on the remote that you don't have
+git fetch origin
+git log --oneline HEAD..origin/master   # commits on remote not in your local
+git log --oneline origin/master..HEAD   # your local commits not on remote
+
+# See the actual diff between your version and remote
+git diff HEAD origin/master             # full diff between your tip and remote tip
+git diff HEAD origin/master -- story-index.txt  # diff for specific file only
+
+# After the conflict is detected, see what's conflicting:
+git status                              # "both modified: story-index.txt"
+git diff                                # Shows conflict markers in working tree
+git diff --staged                       # After git add, shows what you're about to commit
+
+# Verify your resolution before committing:
+git diff --staged story-index.txt       # Exactly what goes into the commit
+```
+
+> Reading the `git diff HEAD origin/master` BEFORE pulling is a professional habit. It tells you exactly what changes are coming and which files will conflict — no surprises. When you know a conflict is coming, you can coordinate with the other developer ("hey Sarah, I'm about to modify story-index.txt too, can we sync for 5 minutes?") and avoid the conflict entirely.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

@@ -221,4 +221,110 @@ Future (after developers work on the branch):
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: You created a branch but accidentally based it on the wrong commit. How do you fix it without losing your work?**
+
+```bash
+# Current state: wrong base
+git log --oneline --graph --all
+
+# Option 1: Rebase the branch onto the correct base
+git checkout xfusioncorp_beta
+git rebase --onto master wrong_base xfusioncorp_beta
+
+# Option 2: Create a new branch from the right place and cherry-pick
+git checkout master
+git checkout -b xfusioncorp_beta_fixed
+git cherry-pick <commit-hashes-from-wrong-branch>
+
+# Verify the new branch has the right base
+git log --oneline --graph
+```
+
+> `git rebase --onto` is the surgical tool for changing a branch's base. It "lifts" the branch commits and replays them onto a different starting point.
+
+---
+
+**Q2: What's the difference between `git checkout -b` and `git switch -c`?**
+
+```bash
+# Old syntax (works everywhere)
+git checkout -b xfusioncorp_beta
+
+# Modern syntax (Git 2.23+, clearer intent)
+git switch -c xfusioncorp_beta
+
+# Also: switching branches
+git checkout master     # old
+git switch master       # new
+```
+
+> `git switch` was introduced in Git 2.23 to separate "switch branches" from "restore files" (both used to be `git checkout`). Both work identically. `checkout -b` is still universal and fine to use — many engineers use it out of habit.
+
+---
+
+**Q3: How do you enforce branch naming conventions in a team using Git hooks?**
+
+```bash
+# Server-side pre-receive hook: /opt/official.git/hooks/pre-receive
+#!/bin/bash
+while read oldrev newrev refname; do
+  branch=$(echo "$refname" | sed 's|refs/heads/||')
+  if ! echo "$branch" | grep -qE '^(feature|bugfix|release|hotfix)/.+'; then
+    echo "ERROR: Branch '$branch' doesn't follow naming convention."
+    echo "Use: feature/*, bugfix/*, release/*, or hotfix/*"
+    exit 1
+  fi
+done
+```
+
+> Pre-receive hooks run on the server before accepting a push. If the hook exits non-zero, the push is rejected. This enforces naming conventions without relying on individual discipline.
+
+---
+
+**Q4: In CI/CD, a pipeline triggers on every branch push. How do you ensure CI only runs on branches matching a pattern?**
+
+```yaml
+# GitHub Actions
+on:
+  push:
+    branches:
+      - 'feature/**'
+      - 'bugfix/**'
+      - master
+
+# GitLab CI
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH =~ /^(feature|bugfix)\//'
+```
+
+> Branch pattern matching in CI configs is essential for large repos — you don't want a CI run for every experimental branch. Naming conventions (feature/, bugfix/, release/) make CI filtering clean and predictable.
+
+---
+
+**Q5: What's the GitFlow branching model and how does `xfusioncorp_beta` fit into it?**
+
+```
+GitFlow model:
+main          ← production-ready code only
+develop       ← integration branch for features
+feature/*     ← individual feature development
+release/*     ← release preparation
+hotfix/*      ← emergency production fixes
+
+xfusioncorp_beta = feature branch in GitFlow terminology
+  → branches from: develop
+  → merges back to: develop (then develop → main via release)
+```
+
+> GitFlow is the classic branching strategy for teams with scheduled releases. For teams doing continuous delivery, GitHub Flow (just `main` + short-lived feature branches) is simpler. Knowing both helps you understand any team's Git workflow.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*

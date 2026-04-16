@@ -255,4 +255,160 @@ The key insight: `git rebase` doesn't lose work — it preserves every change fr
 
 ---
 
+## 💼 Real-World DevOps Q&A
+
+*Practical questions and answers from the perspective of a working DevOps engineer — great for interview prep and deepening your understanding.*
+
+---
+
+**Q1: Rebase paused mid-way with a conflict. You're now in "detached REBASE state" and don't know what to do. What's the recovery procedure?**
+
+```bash
+# Git is paused replaying commit D' and hit a conflict
+git status
+# interactive rebase in progress; onto ghi9012
+# You are currently rebasing branch 'feature' on 'ghi9012'
+#   (fix conflicts and then run "git rebase --continue")
+#   (use "git rebase --skip" to skip this patch)
+#   (use "git rebase --abort" to check out the original branch)
+
+# Step 1: See which files are conflicting
+git status
+# both modified: src/app.py
+
+# Step 2: Open and resolve conflicts
+vi src/app.py  # remove <<<<, ====, >>>> markers, keep correct content
+
+# Step 3: Stage resolved files
+git add src/app.py
+
+# Step 4: Continue — do NOT git commit here, let rebase do it
+git rebase --continue
+# If there are more commits in the rebase, this will replay the next one
+# Each commit with conflicts requires this same resolve → add → continue cycle
+
+# OR, if this commit's changes are no longer relevant:
+git rebase --skip   # Skip this one commit entirely
+
+# OR, abort everything and go back to pre-rebase state:
+git rebase --abort  # Safe exit — restores feature branch exactly as before
+```
+
+> The critical mistake is running `git commit` during a rebase conflict instead of `git rebase --continue`. Committing manually creates an extra commit mid-rebase and produces a tangled history. Always use `--continue` to let rebase handle the commit after you resolve conflicts.
+
+---
+
+**Q2: Your team requires all PRs to be rebased on main before merging. What does the daily workflow look like for a developer with a week-old feature branch?**
+
+```bash
+# Morning routine before starting work:
+git checkout main
+git pull origin main          # Get latest main
+
+git checkout feature/my-work
+git rebase main               # Replay my commits on latest main
+
+# If conflicts: resolve → git add → git rebase --continue
+
+# Force push (required after rebase)
+git push -f origin feature/my-work
+
+# Now open/update the PR — it shows clean diff against latest main
+# CI pipeline runs against current code, not week-old code
+```
+
+> This is the standard professional workflow. Rebasing before opening a PR ensures: (1) CI tests run against the latest code, catching integration problems early, (2) the reviewer sees a clean diff with no noise from other changes, (3) if the PR is merged, it fast-forwards cleanly with no merge commit. Most teams configure their CI to auto-rebase or require the PR branch to be up-to-date before merge is enabled.
+
+---
+
+**Q3: What's interactive rebase (`git rebase -i`) and when would a DevOps engineer use it?**
+
+```bash
+# Squash 5 messy WIP commits into 1 clean commit before PR
+git rebase -i HEAD~5
+
+# Editor opens with:
+# pick abc1234 WIP
+# pick def5678 fix typo
+# pick ghi9012 actually fix it
+# pick jkl3456 final fix
+# pick mno7890 cleanup
+
+# Change to:
+# pick abc1234 WIP        ← keep this as the base commit
+# squash def5678 fix typo ← squash into previous
+# squash ghi9012 actually fix it
+# squash jkl3456 final fix
+# squash mno7890 cleanup
+
+# Git then prompts for a single commit message for all 5
+# Result: 1 clean commit instead of 5 messy ones
+
+# Other useful interactive rebase operations:
+# reword → change commit message
+# edit   → pause and amend the commit
+# drop   → delete this commit entirely
+# fixup  → squash but discard this commit's message
+```
+
+> Interactive rebase is how DevOps engineers "clean up the sausage factory" before a code review. A feature developed in 15 messy commits becomes 3 logical, well-described commits. This makes `git bisect` more effective, code review clearer, and `git log` on main readable. It's a powerful but exclusively local/pre-push tool — never interactive rebase after pushing to a shared branch.
+
+---
+
+**Q4: When should you choose `git merge` over `git rebase` for integrating a feature branch into main?**
+
+> The rule most teams use:
+>
+> **Use rebase when:**
+> - You want linear history (no merge commits)
+> - The branch is your own and hasn't been shared
+> - You're updating a feature branch with latest main before a PR
+> - The project/team explicitly requires "rebase and merge" as the merge strategy
+>
+> **Use merge when:**
+> - The branch is shared (others have pulled it) — never rebase shared branches
+> - You want an explicit merge commit to record when a feature landed (audit trail)
+> - Using `--no-ff` to preserve feature branch topology in history
+> - You're merging a long-lived release or develop branch where the merge commit IS meaningful
+>
+> ```bash
+> # GitHub/GitLab/Gitea offer three merge strategies per-repository:
+> # "Create a merge commit"  → git merge --no-ff
+> # "Squash and merge"       → all feature commits become 1 commit
+> # "Rebase and merge"       → git rebase, then fast-forward
+> ```
+>
+> Most modern teams use "Squash and merge" for feature branches — it keeps main history clean and each PR is a single commit. Rebase is for pre-PR cleanup on personal branches.
+
+---
+
+**Q5: `git rebase` vs `git merge` produced different results for the same feature. Why do the final commits look different?**
+
+```bash
+# Scenario: master has commits A, B, C. Feature has D, E (branched from B).
+
+# After git merge master (from feature):
+git log --oneline --graph
+# * M  (feature) Merge branch 'master' into feature
+# |\
+# | * C  (master)
+# * | E
+# * | D
+# |/
+# * B
+# * A
+
+# After git rebase master (from feature):
+git log --oneline --graph
+# * E' (feature)
+# * D'
+# * C  (master)
+# * B
+# * A
+```
+
+> Same changes, different shapes. With merge: D and E are original commits, M is a new merge commit, the graph forks and rejoins. With rebase: D' and E' have the same code as D and E but NEW commit hashes (because their parent changed from B to C). The feature branch appears to have been written starting from C — linear, clean, but with rewritten history. This is why `git push -f` is required after rebase: the remote's D and E differ from local D' and E'.
+
+---
+
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
