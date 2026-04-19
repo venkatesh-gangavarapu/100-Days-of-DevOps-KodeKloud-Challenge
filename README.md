@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-36%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-37%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -79,7 +79,8 @@ Every day includes:
 | [Day 34](./days/day-34/README.md) | Git Hooks / Automation | Created `post-update` hook for auto release tagging on master push — `release-2026-04-16` created | ✅ |
 | [Day 35](./days/day-35/README.md) | Containerization / Docker | Installed `docker-ce` + `docker-compose-plugin` on App Server 3 — service started and enabled | ✅ |
 | [Day 36](./days/day-36/README.md) | Containerization / Docker | Deployed `nginx:alpine` container named `nginx_1` on App Server 1 — running state verified | ✅ |
-| Day 37 | — | Coming Soon | — |
+| [Day 37](./days/day-37/README.md) | Containerization / Docker | Copied encrypted file `/tmp/nautilus.txt.gpg` from host to `ubuntu_latest` container — integrity verified with `md5sum` | ✅ |
+| Day 38 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -148,6 +149,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 36 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 37 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
