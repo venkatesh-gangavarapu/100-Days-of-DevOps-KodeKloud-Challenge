@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-38%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-39%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -81,7 +81,8 @@ Every day includes:
 | [Day 36](./days/day-36/README.md) | Containerization / Docker | Deployed `nginx:alpine` container named `nginx_1` on App Server 1 — running state verified | ✅ |
 | [Day 37](./days/day-37/README.md) | Containerization / Docker | Copied encrypted file `/tmp/nautilus.txt.gpg` from host to `ubuntu_latest` container — integrity verified with `md5sum` | ✅ |
 | [Day 38](./days/day-38/README.md) | Containerization / Docker | Pulled `busybox:musl` image and re-tagged as `busybox:blog` — same Image ID, no duplication | ✅ |
-| Day 39 | — | Coming Soon | — |
+| [Day 39](./days/day-39/README.md) | Containerization / Docker | Committed running container `ubuntu_latest` as new image `beta:xfusion` using `docker commit` | ✅ |
+| Day 40 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -150,6 +151,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 38 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 39 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
