@@ -1,0 +1,22 @@
+version: '3'
+services:
+  web:
+    image: php:8.2-apache
+    container_name: php_host
+    ports:
+      - "6200:80"
+    volumes:
+      - /var/www/html:/var/www/html
+
+  db:
+    image: mariadb:latest
+    container_name: mysql_host
+    ports:
+      - "3306:3306"
+    volumes:
+      - /var/lib/mysql:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: database_host
+      MYSQL_USER: devuser
+      MYSQL_PASSWORD: Dev@Secure#2024
+      MYSQL_ROOT_PASSWORD: Root@Secure#2024
