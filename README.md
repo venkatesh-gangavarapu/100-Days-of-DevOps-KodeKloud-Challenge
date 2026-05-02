@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-47%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-48%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -90,7 +90,8 @@ Every day includes:
 | [Day 45](./days/day-45/README.md) | Containerization / Dockerfile Debugging | Identified and fixed broken Dockerfile on App Server 2 — image built successfully — Phase 3 🏁 | ✅ |
 | [Day 46](./days/day-46/README.md) | Docker Compose / Full Stack | Deployed LAMP stack — `php_host` (port `6200`) + `mysql_host` (port `3306`) with volumes and env vars | ✅ |
 | [Day 47](./days/day-47/README.md) | Containerization / Python / Dockerfile | Dockerized Python app — built `nautilus/python-app`, deployed `pythonapp_nautilus` on port `8097:8085` | ✅ |
-| Day 48 | — | Coming Soon | — |
+| [Day 48](./days/day-48/README.md) | Kubernetes / Pod | Created first K8s pod `pod-nginx` — `nginx:latest`, label `app=nginx_app`, container `nginx-container` | ✅ |
+| Day 49 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -159,6 +160,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 47 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 48 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
