@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-49%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-50%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -92,7 +92,8 @@ Every day includes:
 | [Day 47](./days/day-47/README.md) | Containerization / Python / Dockerfile | Dockerized Python app — built `nautilus/python-app`, deployed `pythonapp_nautilus` on port `8097:8085` | ✅ |
 | [Day 48](./days/day-48/README.md) | Kubernetes / Pod | Created first K8s pod `pod-nginx` — `nginx:latest`, label `app=nginx_app`, container `nginx-container` | ✅ |
 | [Day 49](./days/day-49/README.md) | Kubernetes / Deployments | Created `nginx` Deployment with `nginx:latest` — ReplicaSet auto-manages Pod lifecycle | ✅ |
-| Day 50 | — | Coming Soon | — |
+| [Day 50](./days/day-50/README.md) | Kubernetes / Resource Management | Created `httpd-pod` with CPU/memory requests (`15Mi`,`100m`) and limits (`20Mi`,`100m`) | ✅ |
+| Day 51 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -161,6 +162,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 49 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 50 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
