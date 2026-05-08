@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-53%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-54%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -96,7 +96,8 @@ Every day includes:
 | [Day 51](./days/day-51/README.md) | Kubernetes / Rolling Updates | Rolling update of `nginx-deployment` to `nginx:1.17` — zero downtime, all pods verified healthy | ✅ |
 | [Day 52](./days/day-52/README.md) | Kubernetes / Rollback | Bug in latest release — rolled back `nginx-deployment` to previous revision using `kubectl rollout undo` | ✅ |
 | [Day 53](./days/day-53/README.md) | Kubernetes / Troubleshooting | Fixed broken nginx+PHP-FPM pod — ConfigMap `fastcgi_pass` corrected to `127.0.0.1:9000`, file deployed via `kubectl cp` | ✅ |
-| Day 54 | — | Coming Soon | — |
+| [Day 54](./days/day-54/README.md) | Kubernetes / Volumes | Created `volume-share-xfusion` pod with `emptyDir` shared between 2 containers — file written in one, verified in other | ✅ |
+| Day 55 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -165,6 +166,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 53 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 54 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
