@@ -11,7 +11,7 @@
 
 ## 👋 About This Challenge
 
-This repository documents my **100-day hands-on AWS & DevOps journey** through [KodeKloud's free challenge](https://kodekloud.com).
+This repository documents my **100-day hands-on AWS & DevOps journey** through [KodeKloud's free challenge](https://engineer.kodekloud.com/signup?referral=64ad88f5803455eea0a89ad5).
 
 The goal isn't just to complete tasks — it's to approach each day the way you would in a real engineering team: understand the *why*, not just the *how*, and document it well enough that someone else could learn from it too.
 
