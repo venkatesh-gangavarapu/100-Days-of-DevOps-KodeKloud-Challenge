@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-58%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-59%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -101,7 +101,8 @@ Every day includes:
 | [Day 56](./days/day-56/README.md) | Kubernetes / Deployment + Service | Created `nginx-deployment` (3 replicas) + `nginx-service` NodePort `30011` — HA static website | ✅ |
 | [Day 57](./days/day-57/README.md) | Kubernetes / Environment Variables | Pod `print-envars-greeting` — 3 env vars, bash echo command, `restartPolicy: Never` | ✅ |
 | [Day 58](./days/day-58/README.md) | Kubernetes / Monitoring / Real-World | Deployed Grafana `grafana-deployment-nautilus` — NodePort `32000`, login page accessible | ✅ |
-| Day 59 | — | Coming Soon | — |
+| [Day 59](./days/day-59/README.md) | Kubernetes / Troubleshooting | Fixed broken `redis-deployment` — diagnosed via `kubectl describe pod` Events, patched with `kubectl edit` | ✅ |
+| Day 60 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -170,6 +171,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 58 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 59 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
