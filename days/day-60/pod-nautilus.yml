@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-nautilus
+  labels:
+    app: web-nautilus
+spec:
+  containers:
+    - name: container-nautilus
+      image: httpd:latest
+      volumeMounts:
+        - name: web-storage
+          mountPath: /usr/local/apache2/htdocs
+  volumes:
+    - name: web-storage
+      persistentVolumeClaim:
+        claimName: pvc-nautilus
