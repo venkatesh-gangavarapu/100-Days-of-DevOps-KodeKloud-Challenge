@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-64%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-65%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -107,7 +107,8 @@ Every day includes:
 | [Day 62](./days/day-62/README.md) | Kubernetes / Secrets | Created Secret `news` from file, mounted at `/opt/apps` in `secret-xfusion` pod — verified inside container | ✅ |
 | [Day 63](./days/day-63/README.md) | Kubernetes / Multi-Tier / Namespaces | Full stack in `iron-namespace-devops` — gallery + MariaDB deployments + ClusterIP/NodePort services | ✅ |
 | [Day 64](./days/day-64/README.md) | Kubernetes / Troubleshooting / Services | Fixed Flask app — wrong `targetPort` corrected to `5000`, `nodePort` set to `32345` | ✅ |
-| Day 65 | — | Coming Soon | — |
+| [Day 65](./days/day-65/README.md) | Kubernetes / ConfigMap / Redis | Redis deployment with `my-redis-config` ConfigMap (`maxmemory 2mb`) + emptyDir data volume | ✅ |
+| Day 66 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -176,6 +177,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 64 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 65 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
