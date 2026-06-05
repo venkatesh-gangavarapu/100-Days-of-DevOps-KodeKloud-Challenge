@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-66%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-67%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -109,7 +109,8 @@ Every day includes:
 | [Day 64](./days/day-64/README.md) | Kubernetes / Troubleshooting / Services | Fixed Flask app — wrong `targetPort` corrected to `5000`, `nodePort` set to `32345` | ✅ |
 | [Day 65](./days/day-65/README.md) | Kubernetes / ConfigMap / Redis | Redis deployment with `my-redis-config` ConfigMap (`maxmemory 2mb`) + emptyDir data volume | ✅ |
 | [Day 66](./days/day-66/README.md) | Kubernetes / Full Stack / Secrets | MySQL: PV + PVC + 3 Secrets + Deployment with `secretKeyRef` env vars + NodePort Service `30007` | ✅ |
-| Day 67 | — | Coming Soon | — |
+| [Day 67](./days/day-67/README.md) | Kubernetes / Multi-Tier / Redis Replication | Guestbook: Redis master + 2 slaves + PHP frontend (3 replicas) — 7 resources, NodePort `30009` | ✅ |
+| Day 68 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -178,6 +179,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 66 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 67 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
