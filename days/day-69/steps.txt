@@ -1,0 +1,65 @@
+# Day 69 — Jenkins Plugin Installation Steps (Git & GitLab)
+# Challenge: KodeKloud 100 Days of DevOps — Phase 5
+# Task: Install Git + GitLab plugins via Jenkins UI
+
+This is a UI-driven task — no shell commands required.
+Steps below document the exact click path for the portfolio record.
+
+# ─────────────────────────────────────────
+# STEP 1: Access Jenkins UI
+# ─────────────────────────────────────────
+# Click the "Jenkins" button on the top bar
+# Login:
+#   Username: admin
+#   Password: Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 2: Navigate to Plugin Manager
+# ─────────────────────────────────────────
+# Dashboard -> Manage Jenkins -> Plugins
+
+# ─────────────────────────────────────────
+# STEP 3: Go to Available Plugins tab
+# ─────────────────────────────────────────
+# Click "Available plugins" in left sidebar
+
+# ─────────────────────────────────────────
+# STEP 4: Search and select Git plugin
+# ─────────────────────────────────────────
+# Search box: "Git"
+# Check the checkbox next to "Git plugin"
+
+# ─────────────────────────────────────────
+# STEP 5: Search and select GitLab plugin
+# ─────────────────────────────────────────
+# Clear search, type: "GitLab"
+# Check the checkbox next to "GitLab Plugin"
+
+# ─────────────────────────────────────────
+# STEP 6: Install
+# ─────────────────────────────────────────
+# Scroll down -> Click "Install"
+# (button may read "Install without restart")
+
+# ─────────────────────────────────────────
+# STEP 7: Enable restart option
+# ─────────────────────────────────────────
+# On installation progress page, check:
+# [x] Restart Jenkins when installation is complete
+#     and no jobs are running
+
+# ─────────────────────────────────────────
+# STEP 8: Wait for restart
+# ─────────────────────────────────────────
+# Page shows "Jenkins is restarting"
+# WAIT for login page to fully reappear (30-90s)
+# Do NOT refresh/navigate away prematurely
+
+# ─────────────────────────────────────────
+# STEP 9: Log back in and verify
+# ─────────────────────────────────────────
+# Login again: admin / Adm!n321
+# Navigate: Manage Jenkins -> Plugins -> Installed plugins
+# Search "Git"    -> should appear, enabled
+# Search "GitLab" -> should appear, enabled
+# Both confirmed = task complete ✅
