@@ -1,0 +1,101 @@
+# Day 70 — Jenkins User Management & Matrix Authorization Strategy
+# Challenge: KodeKloud 100 Days of DevOps — Phase 5
+# Task: Create user jim, configure Project-based Matrix Authorization,
+#       lock down Anonymous, grant jim Read-only on existing job
+
+This is a UI-driven task — no shell commands required.
+Steps below document the exact click path for the portfolio record.
+
+# ─────────────────────────────────────────
+# STEP 1: Login to Jenkins
+# ─────────────────────────────────────────
+# Click "Jenkins" button on top bar
+# Login: admin / Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 2: Create user "jim"
+# ─────────────────────────────────────────
+# Manage Jenkins -> Users -> Create User
+#   Username:   jim
+#   Password:   BruCStnMT5
+#   Confirm:    BruCStnMT5
+#   Full name:  Jim
+#   Email:      jim@stratos.xfusioncorp.com (any valid format)
+# -> Create User
+
+# ─────────────────────────────────────────
+# STEP 3: Install Matrix Authorization Strategy plugin
+# (skip if already installed)
+# ─────────────────────────────────────────
+# Manage Jenkins -> Plugins -> Available plugins
+# Search: "Matrix Authorization Strategy"
+# Check the checkbox
+# -> Install
+# -> [x] Restart Jenkins when installation is complete
+#        and no jobs are running
+# WAIT for login page to fully reappear (do NOT click Finish early)
+# Log back in: admin / Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 4: Configure Global Security
+# ─────────────────────────────────────────
+# Manage Jenkins -> Security
+# Authorization section:
+#   ( ) select "Project-based Matrix Authorization Strategy"
+#
+# In the permission matrix table:
+#   Add user/group -> type "admin" -> Add
+#     Check: Overall / Administer
+#     (this auto-selects all other permissions for admin)
+#
+#   Add user/group -> type "jim" -> Add
+#     Check ONLY: Overall / Read
+#     Leave all other checkboxes for jim UNCHECKED
+#
+#   Anonymous row (already present by default):
+#     UNCHECK every single permission box
+#     (Anonymous should have zero permissions)
+#
+# *** SAFETY CHECK BEFORE SAVING ***
+# Confirm "admin" row has Administer checked
+# Otherwise you will lock yourself out of Jenkins
+#
+# -> Save
+
+# ─────────────────────────────────────────
+# STEP 5: Configure per-job permissions for jim
+# ─────────────────────────────────────────
+# Navigate to the existing job (Dashboard -> [job name])
+# Click "Configure"
+# Scroll to "Enable project-based security" -> check it
+#
+# In the job-level matrix:
+#   Add user -> type "jim" -> Add
+#     Check ONLY: Read (under "Job" category)
+#     Leave UNCHECKED: Build, Configure, Delete, Discover,
+#                       Workspace, Cancel, Move, Tag, etc.
+#
+# -> Save
+
+# ─────────────────────────────────────────
+# STEP 6: Verify
+# ─────────────────────────────────────────
+# 1. Log out of admin session
+# 2. Log in as: jim / BruCStnMT5
+#    - jim should see Dashboard (Overall Read works)
+#    - jim should see the job listed (job Read works)
+#    - jim should NOT be able to Build/Configure/Delete the job
+#      (those buttons should be hidden or return access denied)
+# 3. Open an incognito/private browser window (anonymous access)
+#    - Should be redirected to login page / see no job content
+#    - Confirms Anonymous has zero permissions
+# 4. Log back in as admin to confirm admin still has full access
+
+# ─────────────────────────────────────────
+# SCREENSHOTS TO CAPTURE FOR REVIEW
+# ─────────────────────────────────────────
+# 1. User creation confirmation (jim)
+# 2. Global Security page showing Matrix Authorization table
+#    (admin=Administer, jim=Read only, anonymous=nothing)
+# 3. Job-level "Enable project-based security" with jim=Read only
+# 4. Login as jim showing restricted view
