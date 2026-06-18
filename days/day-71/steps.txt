@@ -1,0 +1,109 @@
+# Day 71 — Jenkins Parameterized Job: Remote Package Installation via SSH
+# Challenge: KodeKloud 100 Days of DevOps — Phase 5
+# Task: Create job "install-packages" with String parameter PACKAGE,
+#       install package on Storage Server via SSH
+
+This is a UI-driven task — no shell commands required.
+Steps below document the exact click path for the portfolio record.
+
+# ─────────────────────────────────────────
+# STEP 1: Login to Jenkins
+# ─────────────────────────────────────────
+# Click "Jenkins" button on top bar
+# Login: admin / Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 2: Install "Publish Over SSH" plugin
+# ─────────────────────────────────────────
+# Manage Jenkins -> Plugins -> Available plugins
+# Search: "Publish Over SSH"
+# Check the checkbox
+# -> Install
+# -> [x] Restart Jenkins when installation is complete
+#        and no jobs are running
+# WAIT for login page to fully reappear
+# Log back in: admin / Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 3: Configure SSH server connection
+# ─────────────────────────────────────────
+# Manage Jenkins -> System
+# Scroll to "Publish over SSH" section
+#
+# SSH Servers -> Add:
+#   Name:             storage-server
+#   Hostname:         ststor01   (or storage server IP)
+#   Username:         natasha
+#   Remote Directory: /tmp
+#
+# Click "Advanced":
+#   [x] Use password authentication, or use a different key
+#   Passphrase / Password: Bl@kW
+#
+# Click "Test Configuration" -> must show "Success" before saving
+# -> Save (Apply + Save at bottom of page)
+
+# ─────────────────────────────────────────
+# STEP 4: Create new Jenkins job
+# ─────────────────────────────────────────
+# Dashboard -> New Item
+#   Item name: install-packages
+#   Type:      Freestyle project
+# -> OK
+
+# ─────────────────────────────────────────
+# STEP 5: Add String Parameter
+# ─────────────────────────────────────────
+# In job configuration, General tab:
+#   [x] This project is parameterized
+#   -> Add Parameter -> String Parameter
+#        Name:          PACKAGE
+#        Default Value: (optional, can leave blank)
+#        Description:   Package name to install on Storage Server
+
+# ─────────────────────────────────────────
+# STEP 6: Add SSH build step
+# ─────────────────────────────────────────
+# Build Steps section:
+#   Add build step -> Send files or execute commands over SSH
+#     SSH Server:   storage-server   (the one configured in Step 3)
+#     Exec command:
+#       sudo yum install -y $PACKAGE
+#
+# -> Save
+
+# ─────────────────────────────────────────
+# STEP 7: Build with parameters
+# ─────────────────────────────────────────
+# Job page -> "Build with Parameters"
+#   PACKAGE: vim-enhanced
+# -> Build
+
+# ─────────────────────────────────────────
+# STEP 8: Verify build success
+# ─────────────────────────────────────────
+# Click into build #1 -> Console Output
+# Confirm: SSH connection successful, exec command output shows
+#          yum install completing successfully
+
+# On the Storage Server directly (verification):
+# ssh natasha@ststor01
+# rpm -q vim-enhanced
+# Expected: vim-enhanced-<version> ✅
+
+# ─────────────────────────────────────────
+# STEP 9: Verify reliability — run again with different package
+# ─────────────────────────────────────────
+# Build with Parameters -> PACKAGE: htop
+# -> Build
+# Confirm build #2 also succeeds
+# rpm -q htop on storage server to confirm ✅
+
+# ─────────────────────────────────────────
+# SCREENSHOTS TO CAPTURE FOR REVIEW
+# ─────────────────────────────────────────
+# 1. Publish over SSH server configuration with "Success" test result
+# 2. Job configuration: String Parameter PACKAGE defined
+# 3. Job configuration: SSH build step with exec command
+# 4. Console output of successful build (PACKAGE=vim-enhanced)
+# 5. Console output of second successful build (different package)
