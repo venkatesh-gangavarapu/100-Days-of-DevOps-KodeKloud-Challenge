@@ -1,0 +1,83 @@
+# Day 72 — Jenkins Parameterized Build: String + Choice Parameters
+# Challenge: KodeKloud 100 Days of DevOps — Phase 5
+# Task: Create job "parameterized-job" with Stage (String) + env (Choice),
+#       echo both values, build with env=Production
+
+This is a UI-driven task — no shell commands required.
+Steps below document the exact click path for the portfolio record.
+
+# ─────────────────────────────────────────
+# STEP 1: Login to Jenkins
+# ─────────────────────────────────────────
+# Click "Jenkins" button on top bar
+# Login: admin / Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 2: Create new Freestyle job
+# ─────────────────────────────────────────
+# Dashboard -> New Item
+#   Item name: parameterized-job
+#   Type:      Freestyle project
+# -> OK
+
+# ─────────────────────────────────────────
+# STEP 3: Add String Parameter
+# ─────────────────────────────────────────
+# General section:
+#   [x] This project is parameterized
+#   -> Add Parameter -> String Parameter
+#        Name:          Stage
+#        Default Value: Build
+#        Description:   Build stage name (optional)
+
+# ─────────────────────────────────────────
+# STEP 4: Add Choice Parameter
+# ─────────────────────────────────────────
+#   -> Add Parameter -> Choice Parameter
+#        Name:    env
+#        Choices: (enter exactly these, one per line)
+#                 Development
+#                 Staging
+#                 Production
+#        Description: Target environment (optional)
+#
+# Note: First choice in the list becomes the default
+
+# ─────────────────────────────────────────
+# STEP 5: Add Execute Shell build step
+# ─────────────────────────────────────────
+# Build Steps section:
+#   Add build step -> Execute shell
+#   Command:
+#     echo "Stage: $Stage"
+#     echo "Environment: $env"
+#
+# -> Save
+
+# ─────────────────────────────────────────
+# STEP 6: Build with Parameters
+# ─────────────────────────────────────────
+# Job page -> "Build with Parameters"
+#   Stage: Build          (default value — keep as is)
+#   env:   Production     (select from dropdown)
+# -> Build
+
+# ─────────────────────────────────────────
+# STEP 7: Verify Console Output
+# ─────────────────────────────────────────
+# Build #1 -> Console Output
+# Expected output:
+#   + echo 'Stage: Build'
+#   Stage: Build
+#   + echo 'Environment: Production'
+#   Environment: Production
+#   Finished: SUCCESS ✅
+
+# ─────────────────────────────────────────
+# SCREENSHOTS TO CAPTURE FOR REVIEW
+# ─────────────────────────────────────────
+# 1. Job configuration: String Parameter "Stage" with default "Build"
+# 2. Job configuration: Choice Parameter "env" with all 3 choices
+# 3. Job configuration: Execute shell with echo commands
+# 4. "Build with Parameters" page showing env=Production selected
+# 5. Console Output showing "Stage: Build" and "Environment: Production"
