@@ -1,0 +1,80 @@
+# Day 73 — Jenkins Scheduled Job: Apache Log Collection
+# Challenge: KodeKloud 100 Days of DevOps — Phase 5
+# Task: Scheduled job every 6 minutes — copy Apache logs from
+#       stapp03 (/var/log/httpd/) to ststor01 (/usr/src/security/)
+
+# ─────────────────────────────────────────
+# STEP 1: Login to Jenkins
+# ─────────────────────────────────────────
+# Click "Jenkins" button on top bar
+# Login: admin / Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 2: Ensure Publish Over SSH plugin is installed
+# ─────────────────────────────────────────
+# Manage Jenkins -> Plugins -> Installed plugins
+# Search "Publish Over SSH" - if not installed:
+#   Available plugins -> Search -> check it
+#   -> Install -> Restart Jenkins when no jobs running
+#   Wait for login page -> Log back in
+
+# ─────────────────────────────────────────
+# STEP 3: Configure App Server 3 SSH connection
+# ─────────────────────────────────────────
+# Manage Jenkins -> System -> Publish over SSH section
+# SSH Servers -> Add:
+#   Name:             app-server-3
+#   Hostname:         stapp03
+#   Username:         banner
+#   Remote Directory: /tmp
+# Click "Advanced":
+#   [x] Use password authentication, or use a different key
+#   Passphrase / Password: BigGr33n
+# Test Configuration -> "Success" ✅
+# -> Apply and Save
+
+# ─────────────────────────────────────────
+# STEP 4: Create new Freestyle job
+# ─────────────────────────────────────────
+# Dashboard -> New Item
+#   Item name: copy-logs
+#   Type:      Freestyle project
+# -> OK
+
+# ─────────────────────────────────────────
+# STEP 5: Configure Build Schedule
+# ─────────────────────────────────────────
+# Build Triggers section:
+#   [x] Build periodically
+#   Schedule: */6 * * * *
+#   (Hover over ? icon to see preview of next build times)
+
+# ─────────────────────────────────────────
+# STEP 6: Add SSH build step
+# ─────────────────────────────────────────
+# Build Steps -> Add build step -> Send files or execute commands over SSH
+#   SSH Server: app-server-3   (select from dropdown)
+#   Transfer Set: (leave blank - no files to transfer TO server)
+#   Exec command:
+#     sudo yum install -y sshpass 2>/dev/null || true
+#     sudo mkdir -p /usr/src/security
+#     sshpass -p 'Bl@kW' scp -o StrictHostKeyChecking=no /var/log/httpd/access_log natasha@ststor01:/usr/src/security/
+#     sshpass -p 'Bl@kW' scp -o StrictHostKeyChecking=no /var/log/httpd/error_log natasha@ststor01:/usr/src/security/
+#
+# -> Save
+
+# ─────────────────────────────────────────
+# STEP 7: Build Now (manual trigger)
+# ─────────────────────────────────────────
+# Job page -> "Build Now"
+# Build #1 -> Console Output -> verify SUCCESS ✅
+
+# ─────────────────────────────────────────
+# STEP 8: Verify logs on Storage Server
+# ─────────────────────────────────────────
+# From jump host:
+# ssh natasha@ststor01
+# ls -la /usr/src/security/
+# Expected:
+#   access_log (non-empty)
+

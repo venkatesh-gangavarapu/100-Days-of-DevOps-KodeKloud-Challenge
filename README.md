@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-72%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-73%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -115,7 +115,8 @@ Every day includes:
 | [Day 70](./days/day-70/README.md) | CI/CD / Jenkins / Security / RBAC | Created user `jim`, configured Project-based Matrix Authorization — Read-only access, Anonymous locked down | ✅ |
 | [Day 71](./days/day-71/README.md) | CI/CD / Jenkins / Automation / SSH | Created parameterized job `install-packages` — Publish Over SSH installs `$PACKAGE` on Storage Server | ✅ |
 | [Day 72](./days/day-72/README.md) | CI/CD / Jenkins / Parameterized Builds | Created `parameterized-job` — String `Stage` + Choice `env`, echo build, verified with `Production` | ✅ |
-| Day 73 | — | Coming Soon | — |
+| [Day 73](./days/day-73/README.md) | CI/CD / Jenkins / Scheduling / Log Mgmt | Scheduled job `copy-logs` (`*/6 * * * *`) — Apache logs from stapp03 → ststor01:/usr/src/security/ | ✅ |
+| Day 74 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -184,6 +185,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 72 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 73 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
