@@ -1,0 +1,82 @@
+# Day 74 — Jenkins Scheduled Job: Automated Database Backup
+# Challenge: KodeKloud 100 Days of DevOps — Phase 5
+# Task: Scheduled job */10 * * * * — mysqldump kodekloud_db01 from stapp01
+#       → /tmp/db_$(date +%F).sql → scp to ststor01:/home/natasha/db_backups/
+
+# ─────────────────────────────────────────
+# STEP 1: Login to Jenkins
+# ─────────────────────────────────────────
+# Click "Jenkins" button on top bar
+# Login: admin / Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 2: Configure App Server 1 SSH connection
+# ─────────────────────────────────────────
+# Manage Jenkins -> System -> Publish over SSH -> Add:
+#   Name:             app-server-1
+#   Hostname:         stapp01
+#   Username:         tony
+#   Remote Directory: /tmp
+#   Advanced -> Use password authentication
+#   Password: Ir0nM@n
+#   Test Configuration -> "Success" ✅
+# -> Apply and Save
+
+# ─────────────────────────────────────────
+# STEP 3: Create new Freestyle job
+# ─────────────────────────────────────────
+# Dashboard -> New Item
+#   Item name: database-backup
+#   Type:      Freestyle project
+# -> OK
+
+# ─────────────────────────────────────────
+# STEP 4: Configure Build Schedule
+# ─────────────────────────────────────────
+# Build Triggers:
+#   [x] Build periodically
+#   Schedule: */10 * * * *
+
+# ─────────────────────────────────────────
+# STEP 5: Add SSH build step
+# ─────────────────────────────────────────
+# Build Steps -> Add build step
+#   -> Send files or execute commands over SSH
+#   SSH Server: app-server-1
+#   Exec command: (paste exactly below)
+#
+# ─── EXEC COMMAND ────────────────────────
+# sudo yum install -y sshpass 2>/dev/null || true
+# sshpass -p 'Bl@kW' ssh -o StrictHostKeyChecking=no natasha@ststor01 "mkdir -p /home/natasha/db_backups"
+# mysqldump -u kodekloud_roy -pasdfgdsd kodekloud_db01 > /tmp/db_$(date +%F).sql
+# sshpass -p 'Bl@kW' scp -o StrictHostKeyChecking=no /tmp/db_$(date +%F).sql natasha@ststor01:/home/natasha/db_backups/
+# ─────────────────────────────────────────
+#
+# -> Save
+
+# ─────────────────────────────────────────
+# STEP 6: Build Now (manual trigger)
+# ─────────────────────────────────────────
+# Job page -> "Build Now"
+# Build #1 -> Console Output -> verify SUCCESS ✅
+
+# ─────────────────────────────────────────
+# STEP 7: Verify backup on Storage Server
+# ─────────────────────────────────────────
+# From jump host:
+# ssh natasha@ststor01
+# ls -lh /home/natasha/db_backups/
+# Expected: db_2026-xx-xx.sql (non-zero size) ✅
+#
+# Optional: verify dump content
+# head -5 /home/natasha/db_backups/db_$(date +%F).sql
+# Expected: MySQL dump header starting with "-- MySQL dump..."
+
+# ─────────────────────────────────────────
+# SCREENSHOTS TO CAPTURE FOR REVIEW
+# ─────────────────────────────────────────
+# 1. Global SSH server config with "Success" test result
+# 2. Job configuration: schedule */10 * * * *
+# 3. Job configuration: SSH build step exec command
+# 4. Console Output of successful build
+# 5. Storage server showing db_YYYY-MM-DD.sql file in db_backups/
