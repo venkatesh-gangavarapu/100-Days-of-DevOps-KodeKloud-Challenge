@@ -1,0 +1,137 @@
+# Day 75 — Jenkins Agent Nodes: Adding All App Servers as SSH Build Agents
+# Challenge: KodeKloud 100 Days of DevOps — Phase 5 Finale
+# Task: Add App_server_1/2/3 (stapp01/02/03) as Jenkins SSH build agents
+
+# ─────────────────────────────────────────
+# STEP 1: Login to Jenkins
+# ─────────────────────────────────────────
+# Click "Jenkins" button on top bar
+# Login: admin / Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 2: Verify SSH Build Agents plugin is installed
+# ─────────────────────────────────────────
+# Manage Jenkins -> Plugins -> Installed plugins
+# Search: "SSH Build Agents"
+# If NOT found:
+#   Available plugins -> Search "SSH Build Agents" -> check
+#   -> Install
+#   -> [x] Restart Jenkins when installation is complete and no jobs running
+#   Wait for login page -> Log back in
+
+# ─────────────────────────────────────────
+# STEP 3: Add Credentials for each app server
+# ─────────────────────────────────────────
+# Manage Jenkins -> Credentials -> System -> Global credentials (unrestricted)
+# -> + Add Credentials
+
+# Credential 1 - App Server 1 (tony)
+#   Kind:        Username with password
+#   Scope:       Global
+#   Username:    tony
+#   Password:    Ir0nM@n
+#   ID:          stapp01-creds
+#   Description: App Server 1 - tony
+# -> Create
+
+# Credential 2 - App Server 2 (steve)
+#   Kind:        Username with password
+#   Scope:       Global
+#   Username:    steve
+#   Password:    Am3ric@
+#   ID:          stapp02-creds
+#   Description: App Server 2 - steve
+# -> Create
+
+# Credential 3 - App Server 3 (banner)
+#   Kind:        Username with password
+#   Scope:       Global
+#   Username:    banner
+#   Password:    BigGr33n
+#   ID:          stapp03-creds
+#   Description: App Server 3 - banner
+# -> Create
+
+# ─────────────────────────────────────────
+# STEP 4: Add App_server_1 node
+# ─────────────────────────────────────────
+# Manage Jenkins -> Nodes -> New Node
+#   Node name: App_server_1
+#   Type:      Permanent Agent
+# -> Create
+#
+# Configure:
+#   Number of executors:    1 (or 2)
+#   Remote root directory:  /home/tony/jenkins
+#   Labels:                 stapp01
+#   Usage:                  Use this node as much as possible
+#   Launch method:          Launch agents via SSH
+#     Host:                 stapp01
+#     Credentials:          tony (stapp01-creds)
+#     Host Key Verification Strategy: Non verifying Verification Strategy
+# -> Save
+
+# ─────────────────────────────────────────
+# STEP 5: Add App_server_2 node
+# ─────────────────────────────────────────
+# Manage Jenkins -> Nodes -> New Node
+#   Node name: App_server_2
+#   Type:      Permanent Agent
+# -> Create
+#
+# Configure:
+#   Remote root directory:  /home/steve/jenkins
+#   Labels:                 stapp02
+#   Launch method:          Launch agents via SSH
+#     Host:                 stapp02
+#     Credentials:          steve (stapp02-creds)
+#     Host Key Verification Strategy: Non verifying Verification Strategy
+# -> Save
+
+# ─────────────────────────────────────────
+# STEP 6: Add App_server_3 node
+# ─────────────────────────────────────────
+# Manage Jenkins -> Nodes -> New Node
+#   Node name: App_server_3
+#   Type:      Permanent Agent
+# -> Create
+#
+# Configure:
+#   Remote root directory:  /home/banner/jenkins
+#   Labels:                 stapp03
+#   Launch method:          Launch agents via SSH
+#     Host:                 stapp03
+#     Credentials:          banner (stapp03-creds)
+#     Host Key Verification Strategy: Non verifying Verification Strategy
+# -> Save
+
+# ─────────────────────────────────────────
+# STEP 7: Launch all agents and verify online
+# ─────────────────────────────────────────
+# Manage Jenkins -> Nodes
+# Each node should show Connected/Online status
+# If offline -> click node -> Launch agent
+# Check log for errors if still offline
+
+# Expected final state:
+# Built-In Node    ONLINE ✅
+# App_server_1     ONLINE ✅  (stapp01, /home/tony/jenkins)
+# App_server_2     ONLINE ✅  (stapp02, /home/steve/jenkins)
+# App_server_3     ONLINE ✅  (stapp03, /home/banner/jenkins)
+
+# ─────────────────────────────────────────
+# NODE SUMMARY TABLE
+# ─────────────────────────────────────────
+# Node Name      | Host   | User   | Password | Root Dir             | Label
+# App_server_1   | stapp01| tony   | Ir0nM@n  | /home/tony/jenkins   | stapp01
+# App_server_2   | stapp02| steve  | Am3ric@  | /home/steve/jenkins  | stapp02
+# App_server_3   | stapp03| banner | BigGr33n | /home/banner/jenkins | stapp03
+
+# ─────────────────────────────────────────
+# SCREENSHOTS TO CAPTURE
+# ─────────────────────────────────────────
+# 1. Nodes list showing all 3 agents Online
+# 2. App_server_1 configuration page
+# 3. App_server_2 configuration page
+# 4. App_server_3 configuration page
+# 5. Each node's agent log showing "Agent successfully connected"
