@@ -1,0 +1,121 @@
+# Day 76 — Jenkins Per-Job Permissions: Granting Access to Packages Job
+# Challenge: KodeKloud 100 Days of DevOps — Phase 6
+# Task: Grant sam (Build/Configure/Read) and rohan (Build/Cancel/Configure/Read/Update/Tag)
+#       on the existing "Packages" job; inheritance: Inherit from parent ACL
+
+# ─────────────────────────────────────────
+# STEP 1: Login to Jenkins
+# ─────────────────────────────────────────
+# Click "Jenkins" button on top bar
+# Login: admin / Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 2: Verify Project-based Matrix Authorization is active
+# ─────────────────────────────────────────
+# Manage Jenkins -> Security
+# Authorization section should show:
+#   "Project-based Matrix Authorization Strategy"
+# If NOT set, enable it (reference: Day 70 setup)
+
+# ─────────────────────────────────────────
+# STEP 3: Navigate to Packages job configuration
+# ─────────────────────────────────────────
+# Dashboard -> Packages -> Configure
+# (Do NOT modify any other settings in the job)
+
+# ─────────────────────────────────────────
+# STEP 4: Enable project-based security on the job
+# ─────────────────────────────────────────
+# In the job configuration, scroll to General section
+# Look for "Enable project-based security"
+# [x] Check this box
+# A permission matrix appears within the job config
+
+# ─────────────────────────────────────────
+# STEP 5: Set Inheritance Strategy
+# ─────────────────────────────────────────
+# "Inheritance Strategy" dropdown:
+#   Select: "Inherit permissions from parent ACL"
+#   (NOT "Do not inherit permission from other ACLs"
+#    NOT "Inherit global ACL")
+
+# ─────────────────────────────────────────
+# STEP 6: Add sam's permissions
+# ─────────────────────────────────────────
+# In the job permission matrix:
+# "Add user..." input -> type: sam -> click Add
+#
+# sam row - check ONLY these boxes:
+#   Job category:
+#     [x] Build
+#     [x] Configure
+#     [x] Read
+#
+# Leave UNCHECKED for sam:
+#   Cancel, Delete, Discover, Move, Tag, Update, Workspace
+
+# ─────────────────────────────────────────
+# STEP 7: Add rohan's permissions
+# ─────────────────────────────────────────
+# "Add user..." input -> type: rohan -> click Add
+#
+# rohan row - check ONLY these boxes:
+#   Job category:
+#     [x] Build
+#     [x] Cancel
+#     [x] Configure
+#     [x] Read
+#     [x] Update
+#     [x] Tag
+#
+# Leave UNCHECKED for rohan:
+#   Delete, Discover, Move, Workspace
+
+# ─────────────────────────────────────────
+# STEP 8: Save
+# ─────────────────────────────────────────
+# -> Save (only save Packages job configuration)
+# Do NOT modify any other jobs
+
+# ─────────────────────────────────────────
+# STEP 9: Verify permissions
+# ─────────────────────────────────────────
+# Test as sam:
+#   Log out -> Log in: sam / sam@pass12345
+#   Navigate to Packages job
+#   - Can see job (Read ✅)
+#   - Build Now button visible (Build ✅)
+#   - Configure link visible (Configure ✅)
+#   - No Delete option (correct ✅)
+#
+# Test as rohan:
+#   Log out -> Log in: rohan / rohan@pass12345
+#   Navigate to Packages job
+#   - All sam permissions +
+#   - Can cancel builds (Cancel ✅)
+#   - Can tag builds (Tag ✅)
+#   - Can update job (Update ✅)
+#
+# Log back in as admin to confirm everything looks correct
+
+# ─────────────────────────────────────────
+# PERMISSION SUMMARY TABLE
+# ─────────────────────────────────────────
+# Permission    | sam | rohan
+# Job/Build     |  ✅ |  ✅
+# Job/Cancel    |  ❌ |  ✅
+# Job/Configure |  ✅ |  ✅
+# Job/Delete    |  ❌ |  ❌
+# Job/Read      |  ✅ |  ✅
+# Job/Tag       |  ❌ |  ✅
+# Job/Update    |  ❌ |  ✅
+
+# ─────────────────────────────────────────
+# SCREENSHOTS TO CAPTURE
+# ─────────────────────────────────────────
+# 1. Packages job config showing "Enable project-based security" checked
+# 2. Inheritance Strategy set to "Inherit permissions from parent ACL"
+# 3. sam row with Build/Configure/Read checked, others unchecked
+# 4. rohan row with Build/Cancel/Configure/Read/Update/Tag checked
+# 5. Logged in as sam showing job visible and Build button present
+# 6. Logged in as rohan showing additional permissions

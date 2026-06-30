@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-75%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-76%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -32,8 +32,8 @@ Every day includes:
 | **Phase 2** | Docker & Containerization | 16–30 | ✅ Complete |
 | **Phase 3** | Kubernetes & Orchestration | 31–45 |✅ Complete |
 | **Phase 4** | AWS Core Services (EC2, S3, VPC, IAM) | 46–60 | ✅ Complete |
-| **Phase 5** | CI/CD Pipelines (GitHub Actions, Jenkins) | 61–70 | 🟡 In Progress |
-| **Phase 6** | Infrastructure as Code (Terraform) | 71–80 | 🔜 Upcoming |
+| **Phase 5** | CI/CD Pipelines (GitHub Actions, Jenkins) | 61–70 | ✅ Complete  |
+| **Phase 6** | Infrastructure as Code (Terraform) | 71–80 | 🟡 In Progress |
 | **Phase 7** | Monitoring & Observability | 81–90 | 🔜 Upcoming |
 | **Phase 8** | Security, IAM Best Practices & Final Projects | 91–100 | 🔜 Upcoming |
 
@@ -118,7 +118,8 @@ Every day includes:
 | [Day 73](./days/day-73/README.md) | CI/CD / Jenkins / Scheduling / Log Mgmt | Scheduled job `copy-logs` (`*/6 * * * *`) — Apache logs from stapp03 → ststor01:/usr/src/security/ | ✅ |
 | [Day 74](./days/day-74/README.md) | CI/CD / Jenkins / DB Backup / Automation | Scheduled `database-backup` (`*/10 * * * *`) — mysqldump `kodekloud_db01` → ststor01:/home/natasha/db_backups/ | ✅ |
 | [Day 75](./days/day-75/README.md) | CI/CD / Jenkins / Agents / Distributed Builds | Added `App_server_1/2/3` as SSH agent nodes — stapp01/02/03 online, labeled, remote roots configured — Phase 5 🏁 | ✅ |
-| Day 76 | — | Coming Soon | — |
+| [Day 76](./days/day-76/README.md) | CI/CD / Jenkins / Security / Per-Job RBAC | Granted `sam` (Build/Configure/Read) and `rohan` (Build/Cancel/Configure/Read/Update/Tag) on `Packages` job | ✅ |
+| Day 77 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -187,6 +188,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 75 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 76 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
