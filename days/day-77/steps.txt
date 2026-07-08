@@ -1,0 +1,123 @@
+# Day 77 — Jenkins Declarative Pipeline: Deploy Web App from Gitea to Apache
+# Challenge: KodeKloud 100 Days of DevOps — Phase 6
+# Task: Pipeline job "datacenter-webapp-job" — git pull web_app to /var/www/html on stapp01
+
+# ─────────────────────────────────────────
+# PRE-WORK: Get the Gitea repo URL
+# ─────────────────────────────────────────
+# Click Gitea button on top bar
+# Login: sarah / Sarah_pass123
+# Navigate: sarah's profile -> web_app repository
+# Copy HTTP clone URL (e.g. http://git.stratos.xfusioncorp.com/sarah/web_app.git)
+
+# ─────────────────────────────────────────
+# STEP 1: Login to Jenkins
+# ─────────────────────────────────────────
+# Click "Jenkins" button on top bar
+# Login: admin / Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 2: Install required plugins (if needed)
+# ─────────────────────────────────────────
+# Manage Jenkins -> Plugins -> Installed plugins
+# Verify these are installed:
+#   - Pipeline (or "Workflow Aggregator")
+#   - Git
+#   - SSH Build Agents
+# If any missing: Available plugins -> search -> install
+# -> Restart when complete if prompted
+
+# ─────────────────────────────────────────
+# STEP 3: Add sarah's credentials
+# ─────────────────────────────────────────
+# Manage Jenkins -> Credentials -> System -> Global credentials
+# -> Add Credentials
+#   Kind:        Username with password
+#   Scope:       Global
+#   Username:    sarah
+#   Password:    Sarah_pass123
+#   ID:          sarah-creds
+#   Description: sarah - App Server 1 / Gitea
+# -> Create
+
+# ─────────────────────────────────────────
+# STEP 4: Add "App Server 1" agent node
+# ─────────────────────────────────────────
+# Manage Jenkins -> Nodes -> New Node
+#   Node name: App Server 1
+#   Type:      Permanent Agent
+# -> Create
+#
+# Configure:
+#   Number of executors:    1
+#   Remote root directory:  /home/sarah/jenkins_agent
+#   Labels:                 stapp01
+#   Usage:                  Use this node as much as possible
+#   Launch method:          Launch agents via SSH
+#     Host:                 stapp01
+#     Credentials:          sarah (sarah-creds)
+#     Host Key Verification: Non verifying Verification Strategy
+# -> Save
+#
+# Click "Launch agent" if not auto-connecting
+# Verify status shows: Connected / Online ✅
+
+# ─────────────────────────────────────────
+# STEP 5: Create Pipeline job
+# ─────────────────────────────────────────
+# Dashboard -> New Item
+#   Item name: datacenter-webapp-job
+#   Type:      Pipeline   ← NOT Multibranch Pipeline
+# -> OK
+
+# ─────────────────────────────────────────
+# STEP 6: Configure the Pipeline
+# ─────────────────────────────────────────
+# Pipeline section -> Definition: "Pipeline script"
+# Paste this Jenkinsfile:
+#
+# pipeline {
+#     agent { label 'stapp01' }
+#     stages {
+#         stage('Deploy') {
+#             steps {
+#                 sh '''
+#                     cd /var/www/html
+#                     git pull
+#                 '''
+#             }
+#         }
+#     }
+# }
+#
+# -> Save
+
+# ─────────────────────────────────────────
+# STEP 7: Build Now
+# ─────────────────────────────────────────
+# Job page -> Build Now
+# Build #1 -> Console Output
+# Expected:
+#   [Pipeline] Start of Pipeline
+#   [Pipeline] node (stapp01)
+#   [Pipeline] stage (Deploy)
+#   [Pipeline] sh (cd /var/www/html && git pull)
+#   Already up to date.  (or: Updating ...)
+#   [Pipeline] End of Pipeline
+#   Finished: SUCCESS ✅
+
+# ─────────────────────────────────────────
+# STEP 8: Verify website
+# ─────────────────────────────────────────
+# Click "App" button on top bar
+# Website should load at https://<LBR-URL>/
+# Content from /var/www/html should be visible
+# NO sub-directory in URL (/web_app etc.) ✅
+
+# ─────────────────────────────────────────
+# SCREENSHOTS TO CAPTURE
+# ─────────────────────────────────────────
+# 1. App Server 1 node Online in Manage Jenkins -> Nodes
+# 2. Pipeline job configuration showing Declarative Pipeline script
+# 3. Console Output of successful build showing "Deploy" stage
+# 4. App button showing website content loaded at root URL
