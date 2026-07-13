@@ -1,0 +1,118 @@
+# Day 78 — Jenkins Pipeline with BRANCH Parameter: Conditional Deployment
+# Challenge: KodeKloud 100 Days of DevOps — Phase 6
+# Task: Pipeline job "nautilus-webapp-job" with BRANCH string parameter
+#       Deploys master or feature branch to /var/www/html on stapp01
+
+# ─────────────────────────────────────────
+# PRE-WORK: Fix agent if still offline
+# ─────────────────────────────────────────
+# From jump host:
+# ssh tony@stapp01   (Password: Ir0nM@n)
+#
+# Install Java:
+# sudo yum install -y java-11-openjdk
+# java -version  ← confirm
+#
+# Ensure sarah exists:
+# id sarah
+# If not: sudo useradd sarah && sudo passwd sarah (Sarah_pass123)
+#
+# Create agent directory:
+# sudo mkdir -p /home/sarah/jenkins_agent
+# sudo chown -R sarah:sarah /home/sarah/jenkins_agent
+#
+# Back in Jenkins: Nodes -> App Server 1 -> Launch agent
+# Verify: Agent successfully connected ✅
+
+# ─────────────────────────────────────────
+# STEP 1: Login to Jenkins
+# ─────────────────────────────────────────
+# Click "Jenkins" button
+# Login: admin / Adm!n321
+
+# ─────────────────────────────────────────
+# STEP 2: Get Gitea repo URL
+# ─────────────────────────────────────────
+# Click Gitea button
+# Login: sarah / Sarah_pass123
+# Navigate: sarah -> web_app repo
+# Copy HTTP clone URL
+# Note: check available branches (master, feature)
+
+# ─────────────────────────────────────────
+# STEP 3: Verify agent is online
+# ─────────────────────────────────────────
+# Manage Jenkins -> Nodes
+# App Server 1 must show Connected/Online ✅ before creating job
+
+# ─────────────────────────────────────────
+# STEP 4: Create Pipeline job
+# ─────────────────────────────────────────
+# Dashboard -> New Item
+#   Item name: nautilus-webapp-job
+#   Type:      Pipeline   (NOT Multibranch Pipeline)
+# -> OK
+
+# ─────────────────────────────────────────
+# STEP 5: Configure Pipeline
+# ─────────────────────────────────────────
+# Pipeline section -> Definition: Pipeline script
+# Paste the following:
+#
+# pipeline {
+#     agent { label 'stapp01' }
+#     parameters {
+#         string(
+#             name: 'BRANCH',
+#             defaultValue: 'master',
+#             description: 'Branch to deploy: master or feature'
+#         )
+#     }
+#     stages {
+#         stage('Deploy') {
+#             steps {
+#                 sh """
+#                     cd /var/www/html
+#                     git checkout ${params.BRANCH}
+#                     git pull origin ${params.BRANCH}
+#                 """
+#             }
+#         }
+#     }
+# }
+#
+# -> Save
+
+# ─────────────────────────────────────────
+# STEP 6: First build - master branch
+# ─────────────────────────────────────────
+# Job page -> "Build with Parameters"
+#   BRANCH: master
+# -> Build
+# Console Output -> SUCCESS
+# git checkout master / git pull origin master ✅
+
+# ─────────────────────────────────────────
+# STEP 7: Second build - feature branch
+# ─────────────────────────────────────────
+# "Build with Parameters"
+#   BRANCH: feature
+# -> Build
+# Console Output -> SUCCESS
+# git checkout feature / git pull origin feature ✅
+
+# ─────────────────────────────────────────
+# STEP 8: Verify website
+# ─────────────────────────────────────────
+# Click "App" button on top bar
+# Website loads at https://<LBR-URL>/  (no sub-path) ✅
+
+# ─────────────────────────────────────────
+# SCREENSHOTS TO CAPTURE
+# ─────────────────────────────────────────
+# 1. App Server 1 agent Online in Nodes list
+# 2. Pipeline script with BRANCH parameter and Deploy stage
+# 3. "Build with Parameters" page showing BRANCH field
+# 4. Console Output for master branch build
+# 5. Console Output for feature branch build
+# 6. App button showing website at root URL

@@ -1,0 +1,21 @@
+pipeline {
+    agent { label 'stapp01' }
+    parameters {
+        string(
+            name: 'BRANCH',
+            defaultValue: 'master',
+            description: 'Branch to deploy: master or feature'
+        )
+    }
+    stages {
+        stage('Deploy') {
+            steps {
+                sh """
+                    cd /var/www/html
+                    git checkout ${params.BRANCH}
+                    git pull origin ${params.BRANCH}
+                """
+            }
+        }
+    }
+}
