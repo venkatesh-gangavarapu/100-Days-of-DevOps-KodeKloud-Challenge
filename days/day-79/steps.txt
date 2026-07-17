@@ -1,0 +1,120 @@
+#!/bin/bash
+# Day 79 — Jenkins Webhook-Triggered Auto-Deployment
+# Challenge: KodeKloud 100 Days of DevOps — Phase 6
+# Job: xfusion-app-deployment
+# Trigger: Poll SCM (every minute) + Gitea webhook
+# Deploy: /home/sarah/web → /var/www/html on stapp01
+
+# ─────────────────────────────────────────
+# STEP 1: Pre-work on stapp01 (do FIRST)
+# ─────────────────────────────────────────
+# ssh tony@stapp01   (Password: Ir0nM@n)
+
+# Add sarah passwordless sudo (use bash -c to avoid shell quoting issues)
+# sudo bash -c 'echo "sarah ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sarah'
+# sudo chmod 440 /etc/sudoers.d/sarah
+
+# Verify sudoers works
+# sudo -u sarah sudo -n whoami
+# Expected: root (no password prompt)
+
+# Set ownership of /var/www/html
+# sudo chown -R sarah:sarah /var/www/html
+
+# Start httpd
+# sudo systemctl start httpd
+# sudo systemctl enable httpd
+
+# Install Java (Jenkins agent requires it)
+# sudo yum install -y java-11-openjdk
+# java -version
+
+# Create Jenkins agent directory
+# sudo -u sarah mkdir -p /home/sarah/jenkins_agent
+
+# ─────────────────────────────────────────
+# STEP 2: Jenkins plugins
+# ─────────────────────────────────────────
+# Manage Jenkins -> Plugins -> Available plugins
+# Install: Gitea, Workflow Aggregator, Git
+# Restart Jenkins -> log back in
+
+# ─────────────────────────────────────────
+# STEP 3: Add sarah credentials in Jenkins
+# ─────────────────────────────────────────
+# Manage Jenkins -> Credentials -> System -> Global credentials
+# Add: Username with password
+#   Username: sarah
+#   Password: Sarah_pass123
+#   ID: sarah-creds
+
+# ─────────────────────────────────────────
+# STEP 4: Add App Server 1 agent node
+# ─────────────────────────────────────────
+# Manage Jenkins -> Nodes -> New Node
+#   Name: App Server 1
+#   Remote root: /home/sarah/jenkins_agent
+#   Labels: stapp01
+#   SSH -> Host: stapp01 -> Credentials: sarah
+#   Host Key Verification: Non verifying
+# Save -> Launch -> verify Online ✅
+
+# ─────────────────────────────────────────
+# STEP 5: Create pipeline job
+# ─────────────────────────────────────────
+# New Item -> xfusion-app-deployment -> Pipeline -> OK
+#
+# Build Triggers:
+#   [x] Poll SCM
+#   Schedule: * * * * *
+#   [x] Build when a change is pushed to Gitea  (if Gitea plugin active)
+#
+# Pipeline script: (see Jenkinsfile)
+# Save -> Build Now -> verify SUCCESS first ✅
+
+# ─────────────────────────────────────────
+# STEP 6: Fix Gitea webhook ALLOWED_HOST_LIST
+# ─────────────────────────────────────────
+# Gitea blocks outbound webhooks to internal IPs by default.
+# Fix by editing Gitea config on the server hosting Gitea:
+
+# ssh root@jenkins   (Password: S3curePass)
+# find / -name "app.ini" 2>/dev/null
+# vi /etc/gitea/app.ini
+#
+# Add/update [webhook] section:
+# [webhook]
+# ALLOWED_HOST_LIST = *
+#
+# systemctl restart gitea
+
+# ─────────────────────────────────────────
+# STEP 7: Configure Gitea webhook
+# ─────────────────────────────────────────
+# Gitea -> sarah/web -> Settings -> Webhooks -> Add Webhook -> Gitea
+#   Target URL: http://jenkins:8080/gitea-webhook/post
+#   Content Type: application/json
+#   Trigger: Push Events
+# Add Webhook -> Test Delivery -> 200 ✅
+#
+# NOTE: If ALLOWED_HOST_LIST fix not possible, Poll SCM alone is sufficient.
+# Poll SCM * * * * * detects push within 60 seconds and auto-triggers.
+
+# ─────────────────────────────────────────
+# STEP 8: Update and push code
+# ─────────────────────────────────────────
+# ssh sarah@stapp01   (Password: Sarah_pass123)
+# cd /home/sarah/web
+# echo "Welcome to the xFusionCorp Industries" > index.html
+# git config user.email "sarah@stratos.xfusioncorp.com"
+# git config user.name "sarah"
+# git add .
+# git commit -m "Deploy: Welcome to xFusionCorp Industries"
+# git push origin master
+# -> Jenkins auto-triggers (webhook or Poll SCM) -> SUCCESS ✅
+
+# ─────────────────────────────────────────
+# STEP 9: Verify
+# ─────────────────────────────────────────
+# Click App button -> "Welcome to the xFusionCorp Industries" at root URL ✅
+# No sub-path /web in URL ✅

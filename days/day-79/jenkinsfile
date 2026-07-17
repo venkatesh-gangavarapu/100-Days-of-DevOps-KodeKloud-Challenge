@@ -1,0 +1,16 @@
+pipeline {
+    agent { label 'stapp01' }
+    stages {
+        stage('Deploy') {
+            steps {
+                sh '''
+                    cd /home/sarah/web
+                    git pull origin master
+                    sudo chown -R sarah:sarah /var/www/html
+                    sudo cp -rp /home/sarah/web/. /var/www/html/
+                    sudo systemctl start httpd || true
+                '''
+            }
+        }
+    }
+}
