@@ -1,0 +1,98 @@
+#!/bin/bash
+# Day 80 — Jenkins Chained Builds: Upstream/Downstream Jobs
+# Challenge: KodeKloud 100 Days of DevOps — Phase 6
+# Jobs: nautilus-app-deployment (upstream) → manage-services (downstream)
+
+# ─────────────────────────────────────────
+# STEP 1: Pre-work on stapp01
+# ─────────────────────────────────────────
+# ssh tony@stapp01   (Ir0nM@n)
+
+# Verify /var/www/html is git repo
+# git -C /var/www/html remote -v
+# Expected: origin → gitea sarah/web
+
+# Verify/setup passwordless sudo for sarah
+# sudo -u sarah sudo -n whoami
+# If fails:
+# sudo bash -c 'echo "sarah ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sarah'
+# sudo chmod 440 /etc/sudoers.d/sarah
+
+# Set ownership
+# sudo chown -R sarah:sarah /var/www/html
+
+# Start httpd
+# sudo systemctl start httpd
+
+# ─────────────────────────────────────────
+# STEP 2: Verify agent App Server 1 is online
+# ─────────────────────────────────────────
+# Manage Jenkins -> Nodes
+# App Server 1: Connected ✅
+
+# ─────────────────────────────────────────
+# STEP 3: Create nautilus-app-deployment (Freestyle)
+# ─────────────────────────────────────────
+# New Item → nautilus-app-deployment → Freestyle project → OK
+#
+# General:
+#   [x] Restrict where this project can be run
+#   Label Expression: stapp01
+#
+# Build Steps → Execute shell:
+#   cd /var/www/html
+#   sudo git fetch origin master
+#   sudo git reset --hard origin/master
+#   sudo chown -R sarah:sarah /var/www/html
+#
+# Post-build Actions → Build other projects:
+#   Projects to build: manage-services
+#   (●) Trigger only if build is stable
+#
+# → Save
+
+# ─────────────────────────────────────────
+# STEP 4: Create manage-services (Freestyle)
+# ─────────────────────────────────────────
+# New Item → manage-services → Freestyle project → OK
+#
+# General:
+#   [x] Restrict where this project can be run
+#   Label Expression: stapp01
+#
+# Build Triggers:
+#   [x] Build after other projects are built
+#   Projects to watch: nautilus-app-deployment
+#   (●) Trigger only if build is stable
+#
+# Build Steps → Execute shell:
+#   sudo systemctl restart httpd
+#   echo "httpd restarted successfully"
+#   sudo systemctl status httpd | grep Active
+#
+# → Save
+
+# ─────────────────────────────────────────
+# STEP 5: Test the chain
+# ─────────────────────────────────────────
+# Jenkins → nautilus-app-deployment → Build Now
+#
+# Expected sequence:
+# 1. nautilus-app-deployment runs → git pull → SUCCESS (green)
+# 2. manage-services auto-triggers → httpd restart → SUCCESS (green)
+#
+# Check both jobs show green build in history ✅
+
+# ─────────────────────────────────────────
+# STEP 6: Verify website
+# ─────────────────────────────────────────
+# Click App button → loads at root URL ✅
+
+# ─────────────────────────────────────────
+# SCREENSHOTS TO CAPTURE
+# ─────────────────────────────────────────
+# 1. nautilus-app-deployment config: Execute shell + Post-build "Build other projects"
+# 2. manage-services config: Build trigger "Build after other projects"
+# 3. Build pipeline view showing both jobs green
+# 4. manage-services console showing httpd restart
+# 5. App button working at root URL

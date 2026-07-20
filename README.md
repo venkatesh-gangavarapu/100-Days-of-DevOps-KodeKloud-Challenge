@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-79%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-80%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -122,7 +122,8 @@ Every day includes:
 | [Day 77](./days/day-77/README.md) | CI/CD / Jenkins / Pipeline / Deployment | Created `devops-webapp-job` — Declarative Pipeline deploys `web_app` from Gitea to stapp01:/var/www/html | ✅ |
 | [Day 78](./days/day-78/README.md) | CI/CD / Jenkins / Parameterized Pipeline | `nautilus-webapp-job` — BRANCH param deploys `master` or `feature` branch to stapp01:/var/www/html | ✅ |
 | [Day 79](./days/day-79/README.md) | CI/CD / Jenkins / Auto-Deploy | `xfusion-app-deployment` — Poll SCM + Gitea webhook (ALLOWED_HOST_LIST fix), cp deploy to /var/www/html | ✅ |
-| Day 80 | — | Coming Soon | — |
+| [Day 80](./days/day-80/README.md) | CI/CD / Jenkins / Chained Builds | `nautilus-app-deployment` → `manage-services` — upstream/downstream chain, git reset + httpd restart | ✅ |
+| Day 81 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -191,6 +192,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 79 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 80 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
