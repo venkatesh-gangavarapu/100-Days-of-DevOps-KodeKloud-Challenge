@@ -1,0 +1,76 @@
+#!/bin/bash
+# Day 81 — Jenkins Two-Stage Pipeline: Deploy + Test
+# Challenge: KodeKloud 100 Days of DevOps — Phase 6
+# Job: deploy-job (Pipeline, NOT Multibranch)
+# Stages: Deploy (git pull /var/www/html) + Test (curl stlb01:8091)
+
+# ─────────────────────────────────────────
+# STEP 1: Update index.html and push (as sarah)
+# ─────────────────────────────────────────
+# ssh sarah@stapp01   (Sarah_pass123)
+# cd /var/www/html
+# echo "Welcome to xFusionCorp Industries" > index.html
+# git config user.email "sarah@stratos.xfusioncorp.com"
+# git config user.name "sarah"
+# git add index.html
+# git commit -m "Update: Welcome to xFusionCorp Industries"
+# git push origin master
+
+# ─────────────────────────────────────────
+# STEP 2: Setup on stapp01 (as tony)
+# ─────────────────────────────────────────
+# ssh tony@stapp01   (Ir0nM@n)
+# sudo yum install -y java-17-openjdk   ← task specifies java-17
+# java -version
+# sudo bash -c 'echo "sarah ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sarah'
+# sudo chmod 440 /etc/sudoers.d/sarah
+# sudo -u sarah sudo -n whoami   ← must output: root
+# sudo chown -R sarah:sarah /var/www/html
+# sudo systemctl start httpd && sudo systemctl enable httpd
+# sudo -u sarah mkdir -p /home/sarah/jenkins_agent
+
+# ─────────────────────────────────────────
+# STEP 3: Jenkins — Add Agent Node
+# ─────────────────────────────────────────
+# Manage Jenkins → Nodes → New Node
+#   Name: App Server 1
+#   Remote root: /home/sarah/jenkins_agent
+#   Labels: stapp01
+#   SSH → stapp01 → sarah-creds → Non verifying
+# → Save → Launch → Online ✅
+
+# ─────────────────────────────────────────
+# STEP 4: Jenkins — Create deploy-job (Pipeline)
+# ─────────────────────────────────────────
+# New Item → deploy-job → Pipeline (NOT Multibranch) → OK
+# Pipeline script: (see Jenkinsfile)
+# → Save → Build Now → SUCCESS ✅
+
+# ─────────────────────────────────────────
+# JENKINSFILE SUMMARY
+# ─────────────────────────────────────────
+# pipeline {
+#     agent { label 'stapp01' }
+#     stages {
+#         stage('Deploy') {
+#             steps {
+#                 sh '''
+#                     cd /var/www/html
+#                     sudo git fetch origin master
+#                     sudo git reset --hard origin/master
+#                     sudo chown -R sarah:sarah /var/www/html
+#                     sudo systemctl start httpd || true
+#                 '''
+#             }
+#         }
+#         stage('Test') {
+#             steps {
+#                 sh '''
+#                     sleep 3
+#                     curl -f http://stlb01:8091 || exit 1
+#                     echo "Website is accessible ✅"
+#                 '''
+#             }
+#         }
+#     }
+# }

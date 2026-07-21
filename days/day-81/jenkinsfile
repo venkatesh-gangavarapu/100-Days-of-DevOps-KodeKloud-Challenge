@@ -1,0 +1,25 @@
+pipeline {
+    agent { label 'stapp01' }
+    stages {
+        stage('Deploy') {
+            steps {
+                sh '''
+                    cd /var/www/html
+                    sudo git fetch origin master
+                    sudo git reset --hard origin/master
+                    sudo chown -R sarah:sarah /var/www/html
+                    sudo systemctl start httpd || true
+                '''
+            }
+        }
+        stage('Test') {
+            steps {
+                sh '''
+                    sleep 3
+                    curl -f http://stlb01:8091 || exit 1
+                    echo "Website is accessible ✅"
+                '''
+            }
+        }
+    }
+}
