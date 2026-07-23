@@ -1,0 +1,9 @@
+---
+- name: Create empty file on App Server 2
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create /tmp/file.txt
+      file:
+        path: /tmp/file.txt
+        state: touch

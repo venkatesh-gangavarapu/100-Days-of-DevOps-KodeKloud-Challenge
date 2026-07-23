@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-82%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-83%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -125,7 +125,8 @@ Every day includes:
 | [Day 80](./days/day-80/README.md) | CI/CD / Jenkins / Chained Builds | `nautilus-app-deployment` → `manage-services` — upstream/downstream chain, git reset + httpd restart | ✅ |
 | [Day 81](./days/day-81/README.md) | CI/CD / Jenkins / Pipeline / Testing | `deploy-job` — two-stage pipeline: `Deploy` (git reset) + `Test` (curl -f stlb01:8091) | ✅ |
 | [Day 82](./days/day-82/README.md) | Ansible / Inventory | Created INI inventory `/home/thor/playbook/inventory` — `stapp03` (App Server 3) with host, user, password vars | ✅ |
-| Day 83 | — | Coming Soon | — |
+| [Day 83](./days/day-83/README.md) | Ansible / Playbook | Updated inventory for `stapp02`, wrote playbook to create `/tmp/file.txt` using `file` module | ✅ |
+| Day 84 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -194,6 +195,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 82 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 83 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>

@@ -1,0 +1,36 @@
+#!/bin/bash
+# Day 83 — Ansible Playbook: Create File on App Server 2
+# Task: Update inventory for stapp02, write playbook to create /tmp/file.txt
+
+# STEP 1: Check existing inventory
+# cat /home/thor/ansible/inventory
+
+# STEP 2: Update inventory for App Server 2 (stapp02 / steve / Am3ric@)
+# cat > /home/thor/ansible/inventory << 'EOF'
+# [all]
+# stapp02 ansible_host=172.16.238.11 ansible_user=steve ansible_password=Am3ric@ ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+# EOF
+
+# STEP 3: Create the playbook
+# cat > /home/thor/ansible/playbook.yml << 'EOF'
+# ---
+# - name: Create empty file on App Server 2
+#   hosts: all
+#   become: yes
+#   tasks:
+#     - name: Create /tmp/file.txt
+#       file:
+#         path: /tmp/file.txt
+#         state: touch
+# EOF
+
+# STEP 4: Test connectivity
+# ansible all -i /home/thor/ansible/inventory -m ping
+
+# STEP 5: Run the playbook
+# cd /home/thor/ansible
+# ansible-playbook -i inventory playbook.yml
+# Expected: stapp02 | ok=2 changed=1 failed=0
+
+# STEP 6: Verify file was created
+# ansible all -i /home/thor/ansible/inventory -m shell -a "ls -la /tmp/file.txt"
