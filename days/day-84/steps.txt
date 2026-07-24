@@ -1,0 +1,45 @@
+#!/bin/bash
+# Day 84 — Ansible: Copy File to All App Servers
+# Task: Create inventory with stapp01/02/03, copy /usr/src/sysops/index.html to /opt/sysops
+
+# STEP 1: Verify source file exists on jump host
+# ls -la /usr/src/sysops/index.html
+
+# STEP 2: Create inventory
+# cat > /home/thor/ansible/inventory << 'EOF'
+# [app_servers]
+# stapp01 ansible_host=172.16.238.10 ansible_user=tony ansible_password=Ir0nM@n ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+# stapp02 ansible_host=172.16.238.11 ansible_user=steve ansible_password=Am3ric@ ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+# stapp03 ansible_host=172.16.238.12 ansible_user=banner ansible_password=BigGr33n ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+# EOF
+
+# STEP 3: Create playbook
+# cat > /home/thor/ansible/playbook.yml << 'EOF'
+# ---
+# - name: Copy index.html to all app servers
+#   hosts: all
+#   become: yes
+#   tasks:
+#     - name: Create /opt/sysops directory if not present
+#       file:
+#         path: /opt/sysops
+#         state: directory
+#         mode: '0755'
+#
+#     - name: Copy index.html to /opt/sysops
+#       copy:
+#         src: /usr/src/sysops/index.html
+#         dest: /opt/sysops/index.html
+#         mode: '0644'
+# EOF
+
+# STEP 4: Test connectivity
+# ansible all -i /home/thor/ansible/inventory -m ping
+
+# STEP 5: Run the playbook
+# cd /home/thor/ansible
+# ansible-playbook -i inventory playbook.yml
+# Expected: stapp01/02/03 — ok=2 changed=1 failed=0
+
+# STEP 6: Verify on each server
+# ansible all -i /home/thor/ansible/inventory -m shell -a "ls -la /opt/sysops/index.html"

@@ -1,0 +1,16 @@
+---
+- name: Copy index.html to all app servers
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create /opt/sysops directory if not present
+      file:
+        path: /opt/sysops
+        state: directory
+        mode: '0755'
+
+    - name: Copy index.html to /opt/sysops
+      copy:
+        src: /usr/src/sysops/index.html
+        dest: /opt/sysops/index.html
+        mode: '0644'
