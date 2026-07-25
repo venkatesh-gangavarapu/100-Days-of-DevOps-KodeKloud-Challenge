@@ -385,3 +385,9 @@ sudo -u postgres psql -c "CREATE USER kodekloud_rin WITH PASSWORD '$(cat /run/se
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-postgresql-database-share-7442163613282390017-0bqd/)
+

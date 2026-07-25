@@ -272,3 +272,9 @@ A rolling update gradually replaces old Pods with new ones rather than terminati
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-kubernetes-k8s-share-7486725866014556160-9FHs/)
+

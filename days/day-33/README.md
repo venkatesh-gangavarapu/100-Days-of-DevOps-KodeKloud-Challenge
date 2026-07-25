@@ -405,3 +405,9 @@ git diff --staged story-index.txt       # Exactly what goes into the commit
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-git-mergeconflict-share-7486723445876129793-GJds/)
+

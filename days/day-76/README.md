@@ -222,3 +222,9 @@ It doesn't scale well as individual per-job matrices — maintaining hundreds of
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-jenkins-cicd-share-7477671356139220992-4jJL/)
+

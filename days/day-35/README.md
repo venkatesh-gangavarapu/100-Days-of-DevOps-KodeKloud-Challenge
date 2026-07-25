@@ -300,3 +300,9 @@ Docker Compose v1 was a standalone Python application installed separately as `d
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_testing-devops-docker-share-7450833242687057920-CgLZ/)
+

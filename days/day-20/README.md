@@ -458,3 +458,9 @@ ls -la /var/run/php-fpm/default.sock
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-nginx-php-share-7443348103979778048-ImBT/)
+

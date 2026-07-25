@@ -229,3 +229,9 @@ Jenkins LTS (Long-Term Support) versions from 2.375+ require Java 11 or 17. Java
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-jenkins-cicd-share-7485372596952428544-2AQX/)
+

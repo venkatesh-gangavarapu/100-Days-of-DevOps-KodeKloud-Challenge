@@ -383,3 +383,9 @@ resource "null_resource" "db_user" {
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-mariadb-mysql-share-7486719845305266176-BUmW/)
+

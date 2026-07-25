@@ -271,3 +271,9 @@ Permanent agents (today's task) are always-on servers that remain connected to J
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-jenkins-cicd-share-7476181295979470848-Xt9W/)
+

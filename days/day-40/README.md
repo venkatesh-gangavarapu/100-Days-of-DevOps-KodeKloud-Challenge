@@ -323,3 +323,9 @@ Changes made inside a container's writable layer survive `docker stop` / `docker
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-docker-containers-share-7452600422390849536-biOi/)
+

@@ -34,3 +34,9 @@ stapp02: steve / Am3ric@ / 172.16.238.11
 stapp03: banner / BigGr33n / 172.16.238.12
 
 *Part of my 100 Days of DevOps Challenge*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-ansible-configmanagement-share-7485743801928572929-udPE/)
+

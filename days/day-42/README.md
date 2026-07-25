@@ -246,3 +246,9 @@ Use `docker run --network ecommerce --ip 172.28.0.10 --name web nginx`. The stat
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-docker-networking-share-7486724370376081408-URzk/)
+

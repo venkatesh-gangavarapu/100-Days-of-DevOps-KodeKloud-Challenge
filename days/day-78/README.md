@@ -257,3 +257,9 @@ Configure a Gitea webhook: in Gitea's repository settings, add a webhook pointin
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-jenkins-cicd-share-7482467068810838016-6k4F/)
+

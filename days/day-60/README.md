@@ -308,3 +308,9 @@ Replace the `hostPath` PV with dynamic EBS or EFS provisioning. For a single web
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-kubernetes-k8s-share-7461320637697929216-4EBc/)
+

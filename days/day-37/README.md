@@ -248,3 +248,9 @@ The file is lost. `docker cp` writes to the container's writable layer — the t
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-docker-containers-share-7451483694957019136-J5Jn/)
+

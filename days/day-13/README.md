@@ -366,3 +366,9 @@ sudo grep 6000 /etc/sysconfig/iptables
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-linux-iptables-share-7439911383292432385-K686/)
+

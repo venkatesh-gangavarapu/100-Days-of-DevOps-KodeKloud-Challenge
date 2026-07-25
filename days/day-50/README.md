@@ -272,3 +272,9 @@ Start by running the application under realistic load without limits and measuri
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-kubernetes-k8s-share-7457036309279215618-IBYx/)
+

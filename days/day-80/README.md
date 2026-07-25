@@ -241,3 +241,9 @@ Chained freestyle jobs have several limitations: (1) No single view of the entir
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-jenkins-cicd-share-7484929601844973568-_f2h/)
+

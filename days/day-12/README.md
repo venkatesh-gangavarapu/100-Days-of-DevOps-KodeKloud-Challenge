@@ -280,3 +280,9 @@ sudo ausearch -m avc -ts recent | grep httpd
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-linux-iptables-share-7439567822352973825-Vwjt/)
+

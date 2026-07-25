@@ -287,3 +287,9 @@ A Kubernetes Job runs a Pod to completion independently — it's not tied to ano
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-kubernetes-k8s-share-7461747573352202240-e_Eu/)
+

@@ -231,3 +231,9 @@ After installing the GitLab plugin, you configure a GitLab Connection in Jenkins
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-jenkins-cicd-share-7472611519269289987--rnT/)
+

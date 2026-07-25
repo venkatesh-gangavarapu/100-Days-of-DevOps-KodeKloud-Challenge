@@ -340,3 +340,9 @@ kubectl get pods
 ### Key Lesson
 
 The pod was `Pending` / `ContainerCreating` — NOT `ImagePullBackOff` or `CrashLoopBackOff`. This meant the image pull wasn't the first failure — the volume mount failed before the container even started. `kubectl describe pod` Events told the full story without needing `kubectl logs` at all. Logs were unavailable because the container never started — the mount failure happened first.
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-kubernetes-k8s-share-7461082730207035392-9YJC/)
+

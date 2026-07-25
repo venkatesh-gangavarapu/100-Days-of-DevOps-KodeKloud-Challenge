@@ -148,3 +148,9 @@ Run the playbook twice. On the second run, all tasks should report `ok` (not `ch
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-ansible-configmanagement-share-7486678011862511616-8IvG/)
+

@@ -412,3 +412,9 @@ git log --oneline --graph
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-git-gitrebase-share-7449707707923607552-IjPs/)
+

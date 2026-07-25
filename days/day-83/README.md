@@ -181,3 +181,9 @@ The `file` module handles all file attributes in one task. `mode: '0644'` sets r
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-ansible-configmanagement-share-7485995871390666752-F06r/)
+

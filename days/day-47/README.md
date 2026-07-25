@@ -291,3 +291,9 @@ Several layers: (1) Use specific image versions (`python:3.11.9-slim`) not `late
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-docker-python-share-7455666651599134720-_etA/)
+

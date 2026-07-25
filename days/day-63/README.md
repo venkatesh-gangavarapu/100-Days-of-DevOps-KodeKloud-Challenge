@@ -227,3 +227,9 @@ The gallery is stateless (files in emptyDir are per-pod, but for a gallery that'
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-kubernetes-k8s-share-7463182930731929601-fb6V/)
+

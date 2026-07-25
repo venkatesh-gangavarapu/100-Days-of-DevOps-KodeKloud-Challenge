@@ -283,3 +283,9 @@ Multiple layers: (1) **Authentication** — configure LDAP/Active Directory or O
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-jenkins-cicd-share-7471185282495590400-5ETQ/)
+

@@ -370,3 +370,9 @@ find /backup -name "xfusioncorp_news_*.zip" -mtime +7 -delete
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-bash-linux-share-7438546335819059202-MjIG/)
+

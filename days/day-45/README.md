@@ -258,3 +258,9 @@ The build context is the directory passed to `docker build` (`.` means current d
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-docker-dockerfile-share-7454811072491900929-TGog/)
+

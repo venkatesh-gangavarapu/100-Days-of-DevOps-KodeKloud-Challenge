@@ -363,3 +363,9 @@ git cherry-pick <their-commit-hashes>   # cherry-pick their work onto clean base
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-git-versioncontrol-share-7448630574585626624--q7L/)
+

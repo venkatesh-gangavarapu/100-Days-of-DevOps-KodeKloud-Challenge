@@ -305,3 +305,9 @@ grep "^SELINUX=" /etc/selinux/config
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-linux-selinux-share-7436659420006285312-vdvf/)
+

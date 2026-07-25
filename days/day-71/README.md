@@ -272,3 +272,9 @@ This Jenkinsfile would be stored in a Git repository, giving the job definition 
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-jenkins-cicd-share-7473355640367644673-UBhs/)
+

@@ -287,3 +287,9 @@ No. `emptyDir` is strictly scoped to a single Pod — it's created per-Pod and e
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-kubernetes-k8s-share-7458561484357292032-dEur/)
+

@@ -231,3 +231,9 @@ After creating the image with `docker commit`, save it as a tar archive: `docker
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-docker-containers-share-7452302129756524544-xpxq/)
+

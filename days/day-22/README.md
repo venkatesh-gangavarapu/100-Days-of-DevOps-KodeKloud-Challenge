@@ -294,3 +294,9 @@ rm -rf /workspace/beta-build-${BUILD_NUMBER}
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-git-versioncontrol-share-7443919946302197760-ws51/)
+

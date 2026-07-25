@@ -206,3 +206,9 @@ This is a judgment call that experienced teams debate actively. Automated rollba
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-kubernetes-k8s-share-7457791912981213184-m8lk/)
+

@@ -289,3 +289,9 @@ When Docker Compose starts multiple services, it creates a default bridge networ
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-docker-dockercompose-share-7454437514351874048-J9yH/)
+

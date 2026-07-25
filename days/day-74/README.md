@@ -266,3 +266,9 @@ Jenkins provides several notification options: (1) **Email Notification** — co
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_commands-devops-jenkins-share-7475874819993931778-KXLU/)
+

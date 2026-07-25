@@ -320,3 +320,9 @@ Hooks remain highly relevant, especially for lightweight or self-hosted setups. 
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-git-githooks-share-7486723924429312000-26ab/)
+

@@ -272,3 +272,9 @@ Several enhancements: (1) Add a test stage before deploy — validate HTML, chec
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-jenkins-cicd-share-7483836332734058496-n6m1/)
+

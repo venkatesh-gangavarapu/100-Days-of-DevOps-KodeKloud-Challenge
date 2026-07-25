@@ -240,3 +240,9 @@ A ConfigMap stores non-sensitive configuration data as key-value pairs or as fil
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-kubernetes-k8s-share-7458212712918171648-WQ18/)
+

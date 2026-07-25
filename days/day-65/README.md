@@ -285,3 +285,9 @@ Replace the `emptyDir` data volume with a PersistentVolumeClaim. Add Redis persi
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-kubernetes-k8s-share-7467524421897850880-drOl/)
+

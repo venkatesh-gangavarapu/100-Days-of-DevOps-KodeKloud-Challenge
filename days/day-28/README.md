@@ -331,3 +331,9 @@ git cherry-pick abc0001 def0002 ghi0003
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-git-versioncontrol-share-7447953963443814400-pqFM/)
+

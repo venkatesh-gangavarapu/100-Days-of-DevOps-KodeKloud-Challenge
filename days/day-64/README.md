@@ -215,3 +215,9 @@ curl http://localhost:32345
 ### Key Lesson
 
 `ImagePullBackOff` with "repository does not exist" = wrong image name. The error message is explicit. No need to look further — fix the image tag immediately. The container port (5000) was already correct in this case, so only the deployment needed editing, not the service.
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-kubernetes-k8s-share-7486726573191262208-aMY_/)
+

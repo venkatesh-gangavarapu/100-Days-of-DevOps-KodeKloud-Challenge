@@ -216,3 +216,9 @@ Several approaches: (1) **Ad-hoc command** — `ansible all -i inventory -m shel
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-ansible-configmanagement-share-7486318336188850177-n79h/)
+
