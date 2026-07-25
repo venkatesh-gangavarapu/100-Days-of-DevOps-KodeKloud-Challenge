@@ -1,0 +1,12 @@
+---
+- name: Create webapp.txt on all app servers
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create /tmp/webapp.txt with correct permissions and ownership
+      file:
+        path: /tmp/webapp.txt
+        state: touch
+        mode: '0744'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
