@@ -1,0 +1,46 @@
+#!/bin/bash
+# Day 86 — Passwordless SSH: Jump Host → App Server 2 (stapp02)
+# Task: Setup key-based auth, verify with ansible ping
+
+# ─────────────────────────────────────────
+# STEP 1: Check existing inventory
+# ─────────────────────────────────────────
+# cat /home/thor/ansible/inventory
+# Note: what hostname/user is already configured for stapp02
+
+# ─────────────────────────────────────────
+# STEP 2: Generate SSH key on jump host (if needed)
+# ─────────────────────────────────────────
+# ls ~/.ssh/id_rsa.pub         ← check if key exists
+# If not:
+# ssh-keygen -t rsa -b 2048 -f ~/.ssh/id_rsa -N ""
+
+# ─────────────────────────────────────────
+# STEP 3: Copy public key to stapp02
+# ─────────────────────────────────────────
+# ssh-copy-id steve@stapp02
+# Password when prompted: Am3ric@
+#
+# OR manually:
+# cat ~/.ssh/id_rsa.pub | ssh steve@stapp02 \
+#   "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys"
+
+# ─────────────────────────────────────────
+# STEP 4: Verify passwordless SSH
+# ─────────────────────────────────────────
+# ssh steve@stapp02
+# Must log in WITHOUT password prompt ✅
+# exit
+
+# ─────────────────────────────────────────
+# STEP 5: Update inventory (remove ansible_password if present)
+# ─────────────────────────────────────────
+# Inventory should look like:
+# stapp02 ansible_host=172.16.238.11 ansible_user=steve ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+# (No ansible_password — using key-based auth)
+
+# ─────────────────────────────────────────
+# STEP 6: Test ansible ping
+# ─────────────────────────────────────────
+# ansible -i /home/thor/ansible/inventory all -m ping
+# Expected: stapp02 | SUCCESS => {"ping": "pong"} ✅

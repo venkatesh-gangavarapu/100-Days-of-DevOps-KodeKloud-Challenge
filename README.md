@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://kodekloud.com)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-85%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-86%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -128,7 +128,8 @@ Every day includes:
 | [Day 83](./days/day-83/README.md) | Ansible / Playbook | Updated inventory for `stapp02`, wrote playbook to create `/tmp/file.txt` using `file` module | ✅ |
 | [Day 84](./days/day-84/README.md) | Ansible / copy Module / Multi-Host | Inventory with all 3 app servers, `copy` module distributes `index.html` to `/opt/sysops/` | ✅ |
 | [Day 85](./days/day-85/README.md) | Ansible / file Module / Variables | `/tmp/webapp.txt` on all servers — `0744` perms, per-host owner via `{{ ansible_user }}` | ✅ |
-| Day 86 | — | Coming Soon | — |
+| [Day 86](./days/day-86/README.md) | Ansible / SSH / Key-Based Auth | Passwordless SSH from jump host to stapp02 via `ssh-copy-id`, verified with `ansible -m ping` | ✅ |
+| Day 87 | — | Coming Soon | — |
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -197,6 +198,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 85 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 86 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
