@@ -158,3 +158,8 @@ sshpass -p 'BigGr33n' ssh-copy-id -o StrictHostKeyChecking=no banner@stapp03
 ---
 
 *Part of my [100 Days of DevOps Challenge](../../README.md) — learning in public, one day at a time.*
+---
+
+## 📱 Proof of Work — LinkedIn Post
+
+[View on LinkedIn](https://www.linkedin.com/posts/venkatesh-gangavarapu_devops-ansible-ssh-share-7487085870932525056-vyfl/)
