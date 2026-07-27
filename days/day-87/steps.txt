@@ -1,0 +1,38 @@
+#!/bin/bash
+# Day 87 — Ansible yum Module: Install samba on All App Servers
+
+# STEP 1: Create directory
+# mkdir -p /home/thor/playbook
+
+# STEP 2: Create inventory with all 3 app servers
+# cat > /home/thor/playbook/inventory << 'EOF'
+# [app_servers]
+# stapp01 ansible_host=172.16.238.10 ansible_user=tony ansible_password=Ir0nM@n ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+# stapp02 ansible_host=172.16.238.11 ansible_user=steve ansible_password=Am3ric@ ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+# stapp03 ansible_host=172.16.238.12 ansible_user=banner ansible_password=BigGr33n ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+# EOF
+
+# STEP 3: Create playbook
+# cat > /home/thor/playbook/playbook.yml << 'EOF'
+# ---
+# - name: Install samba on all app servers
+#   hosts: all
+#   become: yes
+#   tasks:
+#     - name: Install samba package
+#       yum:
+#         name: samba
+#         state: present
+# EOF
+
+# STEP 4: Test connectivity
+# ansible all -i /home/thor/playbook/inventory -m ping
+
+# STEP 5: Run playbook
+# cd /home/thor/playbook
+# ansible-playbook -i inventory playbook.yml
+# Expected: all 3 servers ok=2 changed=1 failed=0
+
+# STEP 6: Verify installation
+# ansible all -i /home/thor/playbook/inventory -m shell -a "rpm -q samba"
+# Expected: samba-x.x.x-x.el7.x86_64 on all servers

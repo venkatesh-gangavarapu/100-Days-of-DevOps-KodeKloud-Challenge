@@ -1,0 +1,9 @@
+---
+- name: Install samba on all app servers
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install samba package
+      yum:
+        name: samba
+        state: present
