@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://engineer.kodekloud.com/signup?referral=64ad88f5803455eea0a89ad5)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-87%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-88%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -130,7 +130,9 @@ Every day includes:
 | [Day 85](./days/day-85/README.md) | Ansible / file Module / Variables | `/tmp/webapp.txt` on all servers — `0744` perms, per-host owner via `{{ ansible_user }}` | ✅ |
 | [Day 86](./days/day-86/README.md) | Ansible / SSH / Key-Based Auth | Passwordless SSH from jump host to stapp02 via `ssh-copy-id`, verified with `ansible -m ping` | ✅ |
 | [Day 87](./days/day-87/README.md) | Ansible / yum Module | Installed `samba` on all app servers using `yum: state: present` with `become: yes` | ✅ |
-| Day 88 | — | Coming Soon | — |
+| [Day 88](./days/day-88/README.md) | Ansible / blockinfile / httpd | Installed httpd, started service, deployed `index.html` via `blockinfile` — owner `apache`, perms `0755` | ✅ |
+| Day 89 | — | Coming Soon | — |
+
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
 
@@ -199,6 +201,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 87 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 88 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
