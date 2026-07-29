@@ -1,0 +1,15 @@
+---
+- name: Install and enable vsftpd on all app servers
+  hosts: all
+  become: yes
+  tasks:
+    - name: Install vsftpd
+      yum:
+        name: vsftpd
+        state: present
+
+    - name: Start and enable vsftpd service
+      service:
+        name: vsftpd
+        state: started
+        enabled: yes
