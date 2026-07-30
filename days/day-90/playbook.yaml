@@ -1,0 +1,72 @@
+---
+- name: App Server 1 - blog.txt with ACL for group tony
+  hosts: stapp01
+  become: yes
+  tasks:
+    - name: Create /opt/security directory
+      file:
+        path: /opt/security
+        state: directory
+
+    - name: Create blog.txt
+      file:
+        path: /opt/security/blog.txt
+        state: touch
+        owner: root
+        group: root
+
+    - name: Set ACL - group tony read on blog.txt
+      acl:
+        path: /opt/security/blog.txt
+        entity: tony
+        etype: group
+        permissions: r
+        state: present
+
+- name: App Server 2 - story.txt with ACL for user steve
+  hosts: stapp02
+  become: yes
+  tasks:
+    - name: Create /opt/security directory
+      file:
+        path: /opt/security
+        state: directory
+
+    - name: Create story.txt
+      file:
+        path: /opt/security/story.txt
+        state: touch
+        owner: root
+        group: root
+
+    - name: Set ACL - user steve read+write on story.txt
+      acl:
+        path: /opt/security/story.txt
+        entity: steve
+        etype: user
+        permissions: rw
+        state: present
+
+- name: App Server 3 - media.txt with ACL for group banner
+  hosts: stapp03
+  become: yes
+  tasks:
+    - name: Create /opt/security directory
+      file:
+        path: /opt/security
+        state: directory
+
+    - name: Create media.txt
+      file:
+        path: /opt/security/media.txt
+        state: touch
+        owner: root
+        group: root
+
+    - name: Set ACL - group banner read+write on media.txt
+      acl:
+        path: /opt/security/media.txt
+        entity: banner
+        etype: group
+        permissions: rw
+        state: present
