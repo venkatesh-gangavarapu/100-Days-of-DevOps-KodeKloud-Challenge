@@ -1,0 +1,10 @@
+# APPEND this task to ~/ansible/role/httpd/tasks/main.yml
+# Use: cat >> ~/ansible/role/httpd/tasks/main.yml
+
+- name: Deploy index.html from Jinja2 template
+  template:
+    src: index.html.j2
+    dest: /var/www/html/index.html
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
