@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://engineer.kodekloud.com/signup?referral=64ad88f5803455eea0a89ad5)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-92%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-93%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -135,7 +135,8 @@ Every day includes:
 | [Day 90](./days/day-90/README.md) | Ansible / ACL / Multi-Play | Per-server ACL: `blog.txt` (tony:r), `story.txt` (steve:rw), `media.txt` (banner:rw) | ✅ |
 | [Day 91](./days/day-91/README.md) | Ansible / lineinfile / httpd | httpd deployed; `copy` created `index.html`, `lineinfile insertbefore: BOF` added line at top | ✅ |
 | [Day 92](./days/day-92/README.md) | Ansible / Roles / Jinja2 | httpd role on stapp02 — `index.html.j2` with `{{ inventory_hostname }}`, `template` task appended, `0755` perms | ✅ |
-| Day 93 | — | Coming Soon | — |
+| [Day 93](./days/day-93/README.md) | Ansible / when Conditionals | `hosts: all` + `ansible_nodename` — blog/story/media.txt to stapp01/02/03 with `0777` perms | ✅ |
+| Day 94 | — | Coming Soon | — |
 
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
@@ -205,6 +206,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 92 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 93 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>

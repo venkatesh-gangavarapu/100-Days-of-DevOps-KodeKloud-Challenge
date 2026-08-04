@@ -1,0 +1,36 @@
+---
+- name: Copy files to app servers using when conditionals
+  hosts: all
+  become: yes
+  tasks:
+    - name: Create /opt/finance directory on all servers
+      file:
+        path: /opt/finance
+        state: directory
+
+    - name: Copy blog.txt to App Server 1 (stapp01)
+      copy:
+        src: /usr/src/finance/blog.txt
+        dest: /opt/finance/blog.txt
+        owner: tony
+        group: tony
+        mode: '0777'
+      when: ansible_nodename == 'stapp01'
+
+    - name: Copy story.txt to App Server 2 (stapp02)
+      copy:
+        src: /usr/src/finance/story.txt
+        dest: /opt/finance/story.txt
+        owner: steve
+        group: steve
+        mode: '0777'
+      when: ansible_nodename == 'stapp02'
+
+    - name: Copy media.txt to App Server 3 (stapp03)
+      copy:
+        src: /usr/src/finance/media.txt
+        dest: /opt/finance/media.txt
+        owner: banner
+        group: banner
+        mode: '0777'
+      when: ansible_nodename == 'stapp03'
