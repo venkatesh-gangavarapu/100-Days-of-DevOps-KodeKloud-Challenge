@@ -4,7 +4,7 @@
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://engineer.kodekloud.com/signup?referral=64ad88f5803455eea0a89ad5)
 [![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
-[![Days Completed](https://img.shields.io/badge/Days%20Completed-97%2F100-blue?style=for-the-badge)]()
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-98%2F100-blue?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -140,7 +140,8 @@ Every day includes:
 | [Day 95](./days/day-95/README.md) | Terraform / AWS / Security Group | Created `xfusion-sg` — HTTP port 80 + SSH port 22 inbound rules in default VPC | ✅ |
 | [Day 96](./days/day-96/README.md) | Terraform / AWS / EC2 / Key Pair | Launched `nautilus-ec2` (t2.micro, Amazon Linux) with RSA key `nautilus-kp` + default SG | ✅ |
 | [Day 97](./days/day-97/README.md) | Terraform / AWS / IAM | Created IAM policy `iampolicy_james` — EC2 read-only: DescribeInstances, DescribeImages, DescribeSnapshots | ✅ |
-| Day 98 | — | Coming Soon | — |
+| [Day 98](./days/day-98/README.md) | Terraform / AWS / VPC / EC2 | Private VPC `10.0.0.0/16` + subnet `10.0.1.0/24` + EC2 `t2.micro` — vars + outputs files | ✅ |
+| Day 99 | — | Coming Soon | — |
 
 
 > 📌 This table updates daily. Each day links to a dedicated folder with full notes, commands, and screenshots.
@@ -210,6 +211,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 97 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 98 of 100 — The journey starts now.</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
