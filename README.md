@@ -3,8 +3,43 @@
 > **Learning in public. Building in production-style. Every single day.**
 
 [![Challenge](https://img.shields.io/badge/Challenge-KodeKloud%20100%20Days-orange?style=for-the-badge)](https://engineer.kodekloud.com/signup?referral=64ad88f5803455eea0a89ad5)
-[![Status](https://img.shields.io/badge/Status-In%20Progress-brightgreen?style=for-the-badge)]()
+[![Status](https://img.shields.io/badge/Status-Complete%20%F0%9F%8F%86-gold?style=for-the-badge)]()
 [![Days Completed](https://img.shields.io/badge/Days%20Completed-100%2F100-blue?style=for-the-badge)]()
+[![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
+
+## 🏆 Certificate of Completion
+
+[![KodeKloud Engineer - 100 Days of DevOps (Level 1)](./certificate/100_Days_of_DevOps.jpg)](https://engineer.kodekloud.com/certificate-verification/3b3f6cf8-de89-4e71-9f6c-4929bfceb77f)
+
+| Detail | Value |
+|--------|-------|
+| **Certificate** | KodeKloud Engineer — 100 Days of DevOps (Level 1) |
+| **Issued by** | KodeKloud |
+| **Verification URL** | [Verify Certificate](https://engineer.kodekloud.com/certificate-verification/3b3f6cf8-de89-4e71-9f6c-4929bfceb77f) |
+| **Completed** | August 2026 |
+
+---
+
+## 📊 Challenge Summary
+
+| Phase | Topics | Days | Status |
+|-------|--------|------|--------|
+| Phase 1 | Linux Fundamentals | 1–15 | ✅ |
+| Phase 2 | Git & Version Control | 16–30 | ✅ |
+| Phase 3 | Docker & Containerization | 31–45 | ✅ |
+| Phase 4 | Kubernetes Core | 46–60 | ✅ |
+| Phase 5 | Advanced K8s & CI/CD (Jenkins) | 61–75 | ✅ |
+| Phase 6 | Production DevOps (Ansible + Terraform + AWS) | 76–100 | ✅ |
+
+---
+
+## 🛠️ Skills Earned
+
+`Linux` `Git` `Docker` `Kubernetes` `Jenkins` `Ansible` `Terraform` `AWS` `CI/CD` `IaC` `CloudWatch` `IAM` `VPC` `EC2` `DynamoDB` `SNS` `Security Groups` `Ansible Roles` `Jinja2` `GitOps`
+
+---
+
+[![Days Completed](https://img.shields.io/badge/Days%20Completed-100%2F100-brightgreen?style=for-the-badge)]()
 [![LinkedIn](https://img.shields.io/badge/Follow%20Journey-LinkedIn-0077B5?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/venkatesh-gangavarapu)
 
 ---
@@ -43,7 +78,7 @@ Every day includes:
 
 | Day | Topic | Summary | Notes |
 |-----|-------|---------|-------|
-| [Day 01](./days/day-01/README.md) | Non-Interactive Shell User | Created user `rose` with `/sbin/nologin` on App Server 1 | ✅ |
+| [Day 01](./days/day-01/README.md) | Linux User Management | Created user `rose` with `/sbin/nologin` non-interactive shell on App Server 1 | ✅ |
 | [Day 02](./days/day-02/README.md) | Linux User Management | Created temporary user `anita` with account expiry `2027-01-28` on App Server 2 | ✅ |
 | [Day 03](./days/day-03/README.md) | Linux Security Hardening | Disabled direct SSH root login on all 3 App Servers — `PermitRootLogin no` | ✅ |
 | [Day 04](./days/day-04/README.md) | Linux File Permissions | Granted execute permissions (`chmod 755`) to backup script for all users on App Server 2 | ✅ |
@@ -51,14 +86,14 @@ Every day includes:
 | [Day 06](./days/day-06/README.md) | Linux Task Scheduling | Installed `cronie`, started `crond`, and added root cron job (`*/5 * * * *`) on all 3 App Servers | ✅ |
 | [Day 07](./days/day-07/README.md) | SSH / Access Management | Configured passwordless SSH from `thor` (jump host) to all 3 App Servers via `ssh-keygen` + `ssh-copy-id` | ✅ |
 | [Day 08](./days/day-08/README.md) | Configuration Management / Ansible | Installed `ansible==4.10.0` globally on jump host via `sudo pip3` — accessible to all users | ✅ |
-| [Day 09](./days/day-09/README.md) | Incident Response / MariaDB | Diagnosed and restored MariaDB service on DB server — root cause analysis + `systemctl enable` | ✅ |
+| [Day 09](./days/day-09/README.md) | Incident Response / MariaDB | Two-layer diagnosis: stale socket file + PID dir permission denied — root cause resolved | ✅ |
 | [Day 10](./days/day-10/README.md) | Bash Scripting / Backup Automation | Wrote `news_backup.sh` — zip archive + local save + passwordless SCP to storage server | ✅ |
 | [Day 11](./days/day-11/README.md) | Application Server / Tomcat | Installed Tomcat on App Server 3, configured port `8083`, deployed `ROOT.war` to base URL | ✅ |
-| [Day 12](./days/day-12/README.md) | Linux Networking / Apache / Firewall | Four-layer diagnosis: Apache config + firewall + SELinux — restored service on port `6300` | ✅ |
-| [Day 13](./days/day-13/README.md) | Linux Security / iptables | Installed iptables, whitelisted LBR (`172.16.238.14`) on port `6000`, blocked all others — rules persisted | ✅ |
+| [Day 12](./days/day-12/README.md) | Linux Networking / Apache / Firewall | Four-layer diagnosis: Apache config + iptables block — restored service on port `6300` | ✅ |
+| [Day 13](./days/day-13/README.md) | Linux Security / iptables | Installed iptables, whitelisted LBR on port `6000`, blocked all others — rules persisted | ✅ |
 | [Day 14](./days/day-14/README.md) | Apache / Fleet Operations | Fleet-wide triage, identified faulty server, fixed Apache and configured port `3002` on all 3 app servers | ✅ |
 | [Day 15](./days/day-15/README.md) | nginx / SSL/TLS | Installed nginx, deployed self-signed SSL cert, configured HTTPS — Phase 1 complete 🏁 | ✅ |
-| [Day 16](./days/day-16/README.md) | Load Balancing / nginx | Configured nginx as LBR on `stlb01` with upstream pool across all 3 app servers — Phase 2 begins 🚀 | ✅ |
+| [Day 16](./days/day-16/README.md) | Load Balancing / nginx | Configured nginx as LBR on `stlb01` with upstream pool across all 3 app servers | ✅ |
 | [Day 17](./days/day-17/README.md) | Database Administration / PostgreSQL | Created user `kodekloud_rin`, database `kodekloud_db2`, granted full privileges — no service restart | ✅ |
 | [Day 18](./days/day-18/README.md) | Database Administration / MariaDB | Installed MariaDB, created `kodekloud_db8`, user `kodekloud_tim` with full privileges | ✅ |
 | [Day 19](./days/day-19/README.md) | Web Server / Apache | Path-based multi-site hosting — `blog` and `apps` served on port `5002` from single Apache instance | ✅ |
@@ -90,7 +125,7 @@ Every day includes:
 | [Day 45](./days/day-45/README.md) | Containerization / Dockerfile Debugging | Identified and fixed broken Dockerfile on App Server 2 — image built successfully — Phase 3 🏁 | ✅ |
 | [Day 46](./days/day-46/README.md) | Docker Compose / Full Stack | Deployed LAMP stack — `php_host` (port `6200`) + `mysql_host` (port `3306`) with volumes and env vars | ✅ |
 | [Day 47](./days/day-47/README.md) | Containerization / Python / Dockerfile | Dockerized Python app — built `nautilus/python-app`, deployed `pythonapp_nautilus` on port `8097:8085` | ✅ |
-| [Day 48](./days/day-48/README.md) | Kubernetes / Pod | Created first K8s pod `pod-nginx` — `nginx:latest`, label `app=nginx_app`, container `nginx-container` | ✅ |
+| [Day 48](./days/day-48/README.md) | Kubernetes / Pods | Created first K8s pod `pod-nginx` — `nginx:latest`, label `app=nginx_app`, container `nginx-container` | ✅ |
 | [Day 49](./days/day-49/README.md) | Kubernetes / Deployments | Created `nginx` Deployment with `nginx:latest` — ReplicaSet auto-manages Pod lifecycle | ✅ |
 | [Day 50](./days/day-50/README.md) | Kubernetes / Resource Management | Created `httpd-pod` with CPU/memory requests (`15Mi`,`100m`) and limits (`20Mi`,`100m`) | ✅ |
 | [Day 51](./days/day-51/README.md) | Kubernetes / Rolling Updates | Rolling update of `nginx-deployment` to `nginx:1.17` — zero downtime, all pods verified healthy | ✅ |
@@ -212,6 +247,6 @@ If this repo is helping you or inspiring you to start your own journey — **dro
 ---
 
 <p align="center">
-  <strong>Day 100 of 100 — The journey starts now.</strong><br/>
+  <strong>Day 100 of 100 — EC2 running. CloudWatch watching. SNS notifying. 100 days complete. 🏆</strong><br/>
   <em>Built with consistency, not perfection.</em>
 </p>
